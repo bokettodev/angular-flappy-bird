@@ -2,11 +2,11 @@
  * This file contains the application's resolutions boundaries.
  * 
  * NOTE: SCSS does not provide a global definition of variables,
- * so you will have to add imports to each file in which you want to use them.
+ * so it necessary to add imports to each styles file in which it will be used.
  *
  * NOTE: Variable names are indicative and do not define device boundaries.
  *
- * Usage example (regardless of the location of your file):
+ * Usage example (regardless of the location of styles file):
  *
  * @use 'resolutions';
  * ...

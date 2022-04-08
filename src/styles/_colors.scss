@@ -1,8 +1,8 @@
 /**
- * This is a file that you can import into your .scss files in order to use the utilities described below.
+ * This is a file that can be imported into .scss files in order to use the utilities described below.
  * 
  * NOTE: SCSS does not provide a global definition of mixins and functions,
- * so you will have to add imports to each file in which you want to use them.
+ * so it necessary to add imports to each styles file in which it will be used.
  */
 
 /** *************************************************************************************************
@@ -10,9 +10,9 @@
  */
 
 /**
- * Use it to convert HEX to HSL and registrate generated color in the target selector as css variable.
+ * Converts HEX to HSL and registrate generated color in the target selector as css variable.
  *
- * Usage example (regardless of the location of your file):
+ * Usage example (regardless of the location of styles file):
  *
  * @use 'colors';
  * ...
@@ -30,9 +30,9 @@
 }
 
 /**
- * Use it to set HSL color saturation.
+ * Sets HSL color saturation.
  *
- * Usage example (regardless of the location of your file):
+ * Usage example (regardless of the location of styles file):
  *
  * @use 'colors';
  * ...
@@ -47,9 +47,9 @@
 }
 
 /**
- * Use it to set HSL color lightness.
+ * Sets HSL color lightness.
  *
- * Usage example (regardless of the location of your file):
+ * Usage example (regardless of the location of styles file):
  *
  * @use 'colors';
  * ...
@@ -64,9 +64,9 @@
 }
 
 /**
- * Use it to set HSL color alpha.
+ * Sets HSL color alpha.
  *
- * Usage example (regardless of the location of your file):
+ * Usage example (regardless of the location of styles file):
  *
  * @use 'colors';
  * ...
