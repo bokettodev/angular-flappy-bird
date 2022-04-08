@@ -1,6 +1,8 @@
-:host,
-svg-icon {
+:host {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  color: var(--color);
+  width: var(--width);
+  height: var(--height);
 }
