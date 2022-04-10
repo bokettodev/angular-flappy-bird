@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  width: 100%;
+  height: var(--height);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  background-color: var(--groundColor);
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: var(--boundaryHeight);
+    width: 200%;
+    left: 0;
+    top: 0;
+    background-image: url('/assets/images/png/grounds/ground-sand.png');
+    background-size: contain;
+    animation: move 5s linear infinite;
+  }
+}
+
+@keyframes move {
+  to {
+    transform: translateX(-50%);
+  }
+}

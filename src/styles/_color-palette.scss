@@ -17,7 +17,6 @@
  * It is FORBIDDEN to use base colors directly in the application.
  */
 $white-color: #fff;
-$black-light-color: #2e3942;
 
 /** *************************************************************************************************
  * APPLICATION COLORS
@@ -28,13 +27,9 @@ $black-light-color: #2e3942;
  * 
  * It is FORBIDDEN to call a color variable by the name of this color.
  * 
- * Bad example: @include defineColorHslByHex(--green-color, #6fc316);
- * Good example: @include defineColorHslByHex(--success-color, #6fc316);
+ * Bad example: @include defineColorHslByHex(--greenColor, #6fc316);
+ * Good example: @include defineColorHslByHex(--successColor, #6fc316);
  */
 :root {
-  // Background colors
-  @include defineColorHslByHex(--bg-primary-color, $white-color);
-
-  // Text colors
-  @include defineColorHslByHex(--text-primary-color, $black-light-color);
+  @include defineColorHslByHex(--groundColor, #dfd996);
 }

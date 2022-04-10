@@ -16,7 +16,7 @@
  *
  * @use 'colors';
  * ...
- * @include defineColorHslByHex(--success-color, #00a2dd);
+ * @include defineColorHslByHex(--successColor, #00a2dd);
  */
 @mixin defineColorHslByHex($color-variable, $hex) {
   $hue: hue($hex);
@@ -36,7 +36,7 @@
  *
  * @use 'colors';
  * ...
- * background-color: colors.setSaturation(var(--success-color), 1.2);
+ * background-color: colors.setSaturation(var(--successColor), 1.2);
  */
 @function setSaturation($color-variable, $saturationMultiplier) {
   $color-variable: -get-variable-name($color-variable);
@@ -53,7 +53,7 @@
  *
  * @use 'colors';
  * ...
- * background-color: colors.setLightness(var(--success-color), 1.1);
+ * background-color: colors.setLightness(var(--successColor), 1.1);
  */
 @function setLightness($color-variable, $lightnessMultiplier) {
   $color-variable: -get-variable-name($color-variable);
@@ -70,7 +70,7 @@
  *
  * @use 'colors';
  * ...
- * background-color: colors.setAlpha(var(--success-color), 0.5);
+ * background-color: colors.setAlpha(var(--successColor), 0.5);
  */
 @function setAlpha($color-variable, $opacity) {
   $color-variable: -get-variable-name($color-variable);

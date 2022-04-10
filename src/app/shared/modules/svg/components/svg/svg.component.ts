@@ -11,7 +11,7 @@ import { DomService, HttpService } from '@shared/services';
 
 @Component({
   selector: 'fb-svg',
-  template: ``,
+  template: '',
   styleUrls: ['./svg.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
