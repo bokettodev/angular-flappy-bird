@@ -17,11 +17,11 @@
     top: 0;
     background-image: url('/assets/images/png/grounds/ground-sand.png');
     background-size: contain;
-    animation: move 5s linear infinite;
+    animation: translate-left 5s linear infinite;
   }
 }
 
-@keyframes move {
+@keyframes translate-left {
   to {
     transform: translateX(-50%);
   }
