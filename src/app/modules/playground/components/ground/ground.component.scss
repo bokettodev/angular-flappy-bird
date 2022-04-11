@@ -11,18 +11,20 @@
   &::before {
     content: '';
     position: absolute;
-    height: var(--boundaryHeight);
+    height: calc(var(--groundImageHeightPixels) * 1px);
     width: 200%;
     left: 0;
     top: 0;
-    background-image: url('/assets/images/png/grounds/ground-sand.png');
+    background-image: url('/assets/images/png/grounds/ground-green.png');
     background-size: contain;
-    animation: translate-left 5s linear infinite;
+    animation: translate-left
+      calc((var(--groundImageWidthPixels) * 1s) / var(--speedPixelsPerSecond))
+      linear infinite;
   }
 }
 
 @keyframes translate-left {
   to {
-    transform: translateX(-50%);
+    transform: translateX(calc(var(--groundImageWidthPixels) * -1px));
   }
 }

@@ -14,12 +14,5 @@
     top: 0;
     background-image: url('/assets/images/png/backgrounds/background-day.png');
     background-size: contain;
-    animation: translate-left 50s linear infinite;
-  }
-}
-
-@keyframes translate-left {
-  to {
-    transform: translateX(-50%);
   }
 }

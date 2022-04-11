@@ -12,6 +12,19 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroundComponent {
-  @Input() @HostBinding('style.--height') height = '22%';
-  @Input() @HostBinding('style.--boundaryHeight') boundaryHeight = '1.5rem';
+  @Input()
+  @HostBinding('style.--height')
+  height = '22%';
+
+  @Input()
+  @HostBinding('style.--groundImageWidthPixels')
+  groundImageWidthPixels = 312;
+
+  @Input()
+  @HostBinding('style.--groundImageHeightPixels')
+  groundImageHeightPixels = 22;
+
+  @Input()
+  @HostBinding('style.--speedPixelsPerSecond')
+  speedPixelsPerSecond = 50;
 }
