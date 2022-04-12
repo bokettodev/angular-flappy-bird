@@ -16,7 +16,7 @@
     left: 0;
     top: 0;
     background-image: url('/assets/images/png/grounds/ground-green.png');
-    background-size: contain;
+    background-repeat: repeat-x;
     animation: translate-left
       calc((var(--groundImageWidthPixels) * 1s) / var(--speedPixelsPerSecond))
       linear infinite;

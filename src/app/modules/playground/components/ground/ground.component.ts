@@ -18,7 +18,7 @@ export class GroundComponent {
 
   @Input()
   @HostBinding('style.--groundImageWidthPixels')
-  groundImageWidthPixels = 312;
+  groundImageWidthPixels = 24;
 
   @Input()
   @HostBinding('style.--groundImageHeightPixels')
