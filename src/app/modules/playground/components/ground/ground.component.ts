@@ -17,14 +17,14 @@ export class GroundComponent {
   height = '22%';
 
   @Input()
-  @HostBinding('style.--groundImageWidthPixels')
+  @HostBinding('style.--ground-image-width-pixels')
   groundImageWidthPixels = 24;
 
   @Input()
-  @HostBinding('style.--groundImageHeightPixels')
+  @HostBinding('style.--ground-image-height-pixels')
   groundImageHeightPixels = 22;
 
   @Input()
-  @HostBinding('style.--speedPixelsPerSecond')
+  @HostBinding('style.--speed-pixels-per-second')
   speedPixelsPerSecond = 50;
 }

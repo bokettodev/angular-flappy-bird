@@ -1,26 +1,25 @@
 :host {
-  display: flex;
-  width: 100%;
-  height: var(--height);
   position: absolute;
   bottom: 0;
   left: 0;
+  display: flex;
+  width: 100%;
+  height: var(--height);
   overflow: hidden;
-  background-color: var(--groundColor);
+  background-color: var(--ground-color);
 
   &::before {
-    content: '';
     position: absolute;
-    height: calc(var(--groundImageHeightPixels) * 1px);
-    width: 200%;
-    left: 0;
     top: 0;
+    left: 0;
+    width: 200%;
+    height: calc(var(--ground-image-height-pixels) * 1px);
+    content: '';
     background-image: url('/assets/images/png/grounds/ground-green.png');
     background-repeat: repeat-x;
-
     animation-name: ground-image-translate-left;
     animation-duration: calc(
-      (var(--groundImageWidthPixels) * 1s) / var(--speedPixelsPerSecond)
+      (var(--ground-image-width-pixels) * 1s) / var(--speed-pixels-per-second)
     );
     animation-timing-function: linear;
     animation-iteration-count: infinite;
@@ -29,6 +28,6 @@
 
 @keyframes ground-image-translate-left {
   to {
-    transform: translateX(calc(var(--groundImageWidthPixels) * -1px));
+    transform: translateX(calc(var(--ground-image-width-pixels) * -1px));
   }
 }

@@ -13,14 +13,14 @@ import {
 })
 export class BackgroundComponent {
   @Input()
-  @HostBinding('style.--backgroundImageWidthPixels')
+  @HostBinding('style.--background-image-width-pixels')
   backgroundImageWidthPixels = 138;
 
   @Input()
-  @HostBinding('style.--backgroundImageHeightPixels')
+  @HostBinding('style.--background-image-height-pixels')
   backgroundImageHeightPixels = 84;
 
   @Input()
-  @HostBinding('style.--speedPixelsPerSecond')
+  @HostBinding('style.--speed-pixels-per-second')
   speedPixelsPerSecond = 10;
 }

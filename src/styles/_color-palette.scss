@@ -27,11 +27,11 @@ $white-color: #fff;
  * 
  * It is FORBIDDEN to call a color variable by the name of this color.
  * 
- * Bad example: @include defineColorHslByHex(--greenColor, #6fc316);
- * Good example: @include defineColorHslByHex(--successColor, #6fc316);
+ * Bad example: @include defineColorHslByHex(--green-color, #6fc316);
+ * Good example: @include defineColorHslByHex(--success-color, #6fc316);
  */
 :root {
-  @include defineColorHslByHex(--skyColor, #4dc1cb);
-  @include defineColorHslByHex(--grassColor, #5ee370);
-  @include defineColorHslByHex(--groundColor, #dfd996);
+  @include defineColorHslByHex(--sky-color, #4dc1cb);
+  @include defineColorHslByHex(--grass-color, #5ee370);
+  @include defineColorHslByHex(--ground-color, #dfd996);
 }
