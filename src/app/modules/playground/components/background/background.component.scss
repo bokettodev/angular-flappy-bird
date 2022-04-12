@@ -1,0 +1,44 @@
+:host {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--skyColor);
+
+  &::before {
+    content: '';
+    position: absolute;
+    height: 22%;
+    width: 100%;
+    left: 0;
+    top: 78%;
+    background-color: var(--grassColor);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    height: calc(var(--backgroundImageHeightPixels) * 1px);
+    width: 200%;
+    left: 0;
+    bottom: 22%;
+    background-image: url('/assets/images/png/backgrounds/background-day.png');
+    background-repeat: repeat-x;
+
+    animation-name: background-image-translate-left;
+    animation-duration: calc(
+      (var(--backgroundImageWidthPixels) * 1s) / var(--speedPixelsPerSecond)
+    );
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+}
+
+@keyframes background-image-translate-left {
+  to {
+    transform: translateX(calc(var(--backgroundImageWidthPixels) * -1px));
+  }
+}

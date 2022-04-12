@@ -31,5 +31,7 @@ $white-color: #fff;
  * Good example: @include defineColorHslByHex(--successColor, #6fc316);
  */
 :root {
+  @include defineColorHslByHex(--skyColor, #4dc1cb);
+  @include defineColorHslByHex(--grassColor, #5ee370);
   @include defineColorHslByHex(--groundColor, #dfd996);
 }

@@ -1,6 +1,10 @@
+@use 'resolutions';
+
 :host {
   display: grid;
   grid-template-rows: 0 100%;
   width: 100%;
   height: 100%;
+  min-width: resolutions.$width-mobile-xs;
+  min-height: resolutions.$width-mobile-xs;
 }

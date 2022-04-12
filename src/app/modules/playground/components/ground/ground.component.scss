@@ -17,13 +17,17 @@
     top: 0;
     background-image: url('/assets/images/png/grounds/ground-green.png');
     background-repeat: repeat-x;
-    animation: translate-left
-      calc((var(--groundImageWidthPixels) * 1s) / var(--speedPixelsPerSecond))
-      linear infinite;
+
+    animation-name: ground-image-translate-left;
+    animation-duration: calc(
+      (var(--groundImageWidthPixels) * 1s) / var(--speedPixelsPerSecond)
+    );
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
   }
 }
 
-@keyframes translate-left {
+@keyframes ground-image-translate-left {
   to {
     transform: translateX(calc(var(--groundImageWidthPixels) * -1px));
   }
