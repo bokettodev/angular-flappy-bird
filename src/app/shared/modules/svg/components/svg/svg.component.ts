@@ -6,6 +6,7 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
+  ViewEncapsulation,
 } from '@angular/core';
 import { DomService, HttpService } from '@shared/services';
 
@@ -13,10 +14,12 @@ import { DomService, HttpService } from '@shared/services';
   selector: 'fb-svg',
   template: '',
   styleUrls: ['./svg.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SvgComponent implements OnChanges {
   @Input() @HostBinding('style.--color') color?: string;
+  @Input() @HostBinding('style.--color-on-hover') colorOnHover?: string;
   @Input() @HostBinding('style.--width') width?: string;
   @Input() @HostBinding('style.--height') height?: string;
   @Input() icon?: string;
@@ -29,11 +32,11 @@ export class SvgComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['icon']) {
-      this.downloadSvg();
+      this.downloadAndInjectSvg();
     }
   }
 
-  private downloadSvg(): void {
+  private downloadAndInjectSvg(): void {
     if (!this.icon) {
       return;
     }

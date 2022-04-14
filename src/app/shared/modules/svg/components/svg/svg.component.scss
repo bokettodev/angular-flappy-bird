@@ -1,8 +1,12 @@
-:host {
+fb-svg {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: var(--width);
   height: var(--height);
   color: var(--color);
+
+  &:hover {
+    color: var(--color-on-hover, var(--color));
+  }
 }
