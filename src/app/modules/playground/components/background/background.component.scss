@@ -27,7 +27,7 @@
     content: '';
     background-image: url('/assets/images/png/backgrounds/background-day.png');
     background-repeat: repeat-x;
-    animation-name: background-image-translate-left;
+    animation-name: background-image-move-left;
     animation-duration: calc(
       (var(--background-image-width-pixels) * 1s) /
         var(--speed-pixels-per-second)
@@ -37,7 +37,7 @@
   }
 }
 
-@keyframes background-image-translate-left {
+@keyframes background-image-move-left {
   to {
     transform: translateX(calc(var(--background-image-width-pixels) * -1px));
   }

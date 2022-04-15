@@ -2,7 +2,7 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  display: flex;
+  display: block;
   width: 100%;
   height: var(--height);
   overflow: hidden;
@@ -17,7 +17,7 @@
     content: '';
     background-image: url('/assets/images/png/grounds/ground-green.png');
     background-repeat: repeat-x;
-    animation-name: ground-image-translate-left;
+    animation-name: ground-image-move-left;
     animation-duration: calc(
       (var(--ground-image-width-pixels) * 1s) / var(--speed-pixels-per-second)
     );
@@ -26,7 +26,7 @@
   }
 }
 
-@keyframes ground-image-translate-left {
+@keyframes ground-image-move-left {
   to {
     transform: translateX(calc(var(--ground-image-width-pixels) * -1px));
   }

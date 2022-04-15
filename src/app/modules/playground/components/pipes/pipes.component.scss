@@ -1,0 +1,39 @@
+:host {
+  position: relative;
+  display: block;
+  width: calc(var(--pipe-head-width-pixels) * 1px);
+  height: 100%;
+  overflow: hidden;
+}
+
+.pipe {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 40%;
+
+  &__head {
+    width: 100%;
+    height: calc(var(--pipe-head-height-pixels) * 1px);
+    background-image: url('/assets/images/png/pipes/pipe-head-green.png');
+    background-size: contain;
+  }
+
+  &__body {
+    width: calc(100% - 4px);
+    height: calc(100% - var(--pipe-head-height-pixels) * 1px);
+    background-image: url('/assets/images/png/pipes/pipe-body-green.png');
+    background-size: contain;
+  }
+
+  &:first-child {
+    top: 0;
+    transform: rotateX(180deg);
+  }
+
+  &:last-child {
+    bottom: 0;
+  }
+}
