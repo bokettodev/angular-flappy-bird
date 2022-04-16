@@ -1,5 +1,7 @@
 :host {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 100%;
   display: block;
   width: calc(var(--pipe-head-width-pixels) * 1px);
   height: 100%;

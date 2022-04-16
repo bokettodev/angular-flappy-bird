@@ -25,9 +25,9 @@ export class SvgComponent implements OnChanges {
   @Input() icon?: string;
 
   constructor(
-    private elementRef: ElementRef<HTMLElement>,
-    private domService: DomService,
-    private httpService: HttpService,
+    private readonly elementRef: ElementRef<HTMLElement>,
+    private readonly domService: DomService,
+    private readonly httpService: HttpService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
