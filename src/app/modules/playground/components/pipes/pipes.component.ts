@@ -5,10 +5,14 @@ import {
   HostBinding,
   HostListener,
   Input,
+  OnInit,
 } from '@angular/core';
+import { PlaygroundStoreService } from '@modules/playground/services';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TRANSLATE_X_ON_ENTER_ANIMATION } from '@shared/animations';
 import { TranslateXOnEnterAnimationParams } from '@shared/interfaces';
 
+@UntilDestroy()
 @Component({
   selector: 'fb-pipes',
   template: `
@@ -26,7 +30,7 @@ import { TranslateXOnEnterAnimationParams } from '@shared/interfaces';
   animations: [TRANSLATE_X_ON_ENTER_ANIMATION],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PipesComponent {
+export class PipesComponent implements OnInit {
   @Input()
   @HostBinding('style.--pipe-head-width-pixels')
   pipeHeadWidthPixels = 52;
@@ -36,18 +40,19 @@ export class PipesComponent {
   pipeHeadHeightPixels = 24;
 
   @Input()
-  speedPixelsPerSecond = 50;
-
-  @Input()
   parentWidthPx = 0;
 
-  constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
+  speedPixelsPerSecond = 0;
+
+  constructor(
+    private readonly elementRef: ElementRef<HTMLElement>,
+    private readonly playgroundStoreService: PlaygroundStoreService,
+  ) {}
 
   @HostBinding('@translateXOnEnterAnimation')
   get hostAnimationParams(): TranslateXOnEnterAnimationParams {
     const durationSeconds =
-      (this.parentWidthPx + this.pipeHeadWidthPixels * 2) /
-      this.speedPixelsPerSecond;
+      (this.parentWidthPx + this.pipeHeadWidthPixels * 2) / this.speedPixelsPerSecond;
 
     return {
       value: true,
@@ -59,8 +64,20 @@ export class PipesComponent {
     };
   }
 
+  ngOnInit(): void {
+    this.initListeners();
+  }
+
   @HostListener('@translateXOnEnterAnimation.done')
   destroyHost(): void {
     this.elementRef.nativeElement.remove();
+  }
+
+  private initListeners(): void {
+    this.playgroundStoreService.objectsSpeedPixelsPerSecond$
+      .pipe(untilDestroyed(this))
+      .subscribe((speedPixelsPerSecond) => {
+        this.speedPixelsPerSecond = speedPixelsPerSecond;
+      });
   }
 }

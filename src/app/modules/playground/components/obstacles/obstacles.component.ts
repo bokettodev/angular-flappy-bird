@@ -4,14 +4,16 @@ import {
   Component,
   ElementRef,
   HostBinding,
-  Input,
   OnInit,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import { PlaygroundStoreService } from '@modules/playground/services';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { interval } from 'rxjs';
 import { PipesComponent } from '../pipes/pipes.component';
 
+@UntilDestroy()
 @Component({
   selector: 'fb-obstacles',
   template: `
@@ -21,9 +23,8 @@ import { PipesComponent } from '../pipes/pipes.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ObstaclesComponent implements OnInit {
-  @Input()
   @HostBinding('style.--ground-height')
-  groundHeight = '22%';
+  groundHeight = '0';
 
   @ViewChild('pipesContainerRef', { read: ViewContainerRef, static: true })
   private readonly pipesContainerRef!: ViewContainerRef;
@@ -31,6 +32,7 @@ export class ObstaclesComponent implements OnInit {
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
     private readonly cdRef: ChangeDetectorRef,
+    private readonly playgroundStoreService: PlaygroundStoreService,
   ) {}
 
   @HostBinding('style.--host-width-px')
@@ -39,18 +41,25 @@ export class ObstaclesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initListeners();
     this.runPipesCreator();
   }
 
+  private initListeners(): void {
+    this.playgroundStoreService.groundHeight$
+      .pipe(untilDestroyed(this))
+      .subscribe((groundHeight) => {
+        this.groundHeight = groundHeight;
+      });
+  }
+
   private runPipesCreator(): void {
-    interval(3000).subscribe(() => {
-      const pipesComponentRef =
-        this.pipesContainerRef.createComponent(PipesComponent);
-
-      pipesComponentRef.instance.parentWidthPx =
-        this.elementRef.nativeElement.clientWidth;
-
-      this.cdRef.detectChanges();
-    });
+    interval(3000)
+      .pipe(untilDestroyed(this))
+      .subscribe(() => {
+        const pipesComponentRef = this.pipesContainerRef.createComponent(PipesComponent);
+        pipesComponentRef.instance.parentWidthPx = this.elementRef.nativeElement.clientWidth;
+        this.cdRef.detectChanges();
+      });
   }
 }

@@ -10,17 +10,17 @@
 
   &::before {
     position: absolute;
-    top: 78%;
+    top: calc(100% - var(--ground-height));
     left: 0;
     width: 100%;
-    height: 22%;
+    height: var(--ground-height);
     content: '';
     background-color: var(--grass-color);
   }
 
   &::after {
     position: absolute;
-    bottom: 22%;
+    bottom: var(--ground-height);
     left: 0;
     width: 200%;
     height: calc(var(--background-image-height-pixels) * 1px);
@@ -29,8 +29,7 @@
     background-repeat: repeat-x;
     animation-name: background-image-move-left;
     animation-duration: calc(
-      (var(--background-image-width-pixels) * 1s) /
-        var(--speed-pixels-per-second)
+      (var(--background-image-width-pixels) * 1s) / var(--speed-pixels-per-second)
     );
     animation-timing-function: linear;
     animation-iteration-count: infinite;

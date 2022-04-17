@@ -39,10 +39,7 @@ module.exports = {
           'always',
           { exceptAfterSingleLine: true },
         ],
-        '@typescript-eslint/no-floating-promises': [
-          'error',
-          { ignoreVoid: true },
-        ],
+        '@typescript-eslint/no-floating-promises': ['error', { ignoreVoid: true }],
         '@typescript-eslint/explicit-function-return-type': [
           'error',
           { allowTypedFunctionExpressions: true },

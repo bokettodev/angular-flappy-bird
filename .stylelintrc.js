@@ -1,8 +1,7 @@
 /**
  * Pattern for `lowerCamelCase` things with a `lowerCamelCase` namespace.
  */
-const LOWER_CAMEL_CASE_WITH_NAMESPACE_PATTERN =
-  /^[a-z][a-zA-Z0-9]+[.][a-z][a-zA-Z0-9]+$/;
+const LOWER_CAMEL_CASE_WITH_NAMESPACE_PATTERN = /^[a-z][a-zA-Z0-9]+[.][a-z][a-zA-Z0-9]+$/;
 
 module.exports = {
   extends: [

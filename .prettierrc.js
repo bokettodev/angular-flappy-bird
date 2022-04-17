@@ -4,7 +4,7 @@ module.exports = {
   semi: true,
   singleQuote: true,
   bracketSpacing: true,
-  printWidth: 80,
+  printWidth: 100,
   htmlWhitespaceSensitivity: 'ignore',
   endOfLine: 'lf',
 };

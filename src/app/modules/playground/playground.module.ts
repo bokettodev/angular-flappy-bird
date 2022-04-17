@@ -9,6 +9,7 @@ import {
   PipesComponent,
   PlaygroundComponent,
 } from './components';
+import { PlaygroundStoreService } from './services';
 
 @NgModule({
   declarations: [
@@ -19,5 +20,6 @@ import {
     PlaygroundComponent,
   ],
   imports: [CommonModule, PlaygroundRoutingModule, SvgModule],
+  providers: [PlaygroundStoreService],
 })
 export class PlaygroundModule {}

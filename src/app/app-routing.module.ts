@@ -5,9 +5,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./modules/playground/playground.module').then(
-        (m) => m.PlaygroundModule,
-      ),
+      import('./modules/playground/playground.module').then((m) => m.PlaygroundModule),
   },
   { path: '**', redirectTo: '' },
 ];
