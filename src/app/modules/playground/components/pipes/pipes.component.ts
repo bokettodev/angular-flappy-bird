@@ -6,7 +6,8 @@ import {
   HostListener,
   Input,
 } from '@angular/core';
-import { LEFT_MOVEMENT_ANIMATION } from '@shared/animations';
+import { TRANSLATE_X_ON_ENTER_ANIMATION } from '@shared/animations';
+import { TranslateXOnEnterAnimationParams } from '@shared/interfaces';
 
 @Component({
   selector: 'fb-pipes',
@@ -22,7 +23,7 @@ import { LEFT_MOVEMENT_ANIMATION } from '@shared/animations';
     </div>
   `,
   styleUrls: ['./pipes.component.scss'],
-  animations: [LEFT_MOVEMENT_ANIMATION],
+  animations: [TRANSLATE_X_ON_ENTER_ANIMATION],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PipesComponent {
@@ -38,34 +39,27 @@ export class PipesComponent {
   speedPixelsPerSecond = 50;
 
   @Input()
-  parentWidthPx?: number;
+  parentWidthPx = 0;
 
   constructor(private readonly elementRef: ElementRef<HTMLElement>) {}
 
-  @HostBinding('@leftMovementAnimation')
-  get hostAnimationParams(): {
-    value: boolean;
-    params: {
-      duration: string;
-      leftStart: string;
-      leftEnd: string;
-    };
-  } {
+  @HostBinding('@translateXOnEnterAnimation')
+  get hostAnimationParams(): TranslateXOnEnterAnimationParams {
     const durationSeconds =
-      (this.parentWidthPx || 0 + this.pipeHeadWidthPixels) /
+      (this.parentWidthPx + this.pipeHeadWidthPixels * 2) /
       this.speedPixelsPerSecond;
 
     return {
       value: true,
       params: {
         duration: `${durationSeconds}s`,
-        leftStart: '100%',
-        leftEnd: `-${this.pipeHeadWidthPixels}px`,
+        from: '100%',
+        to: `-${this.parentWidthPx + this.pipeHeadWidthPixels}px`,
       },
     };
   }
 
-  @HostListener('@leftMovementAnimation.done')
+  @HostListener('@translateXOnEnterAnimation.done')
   destroyHost(): void {
     this.elementRef.nativeElement.remove();
   }

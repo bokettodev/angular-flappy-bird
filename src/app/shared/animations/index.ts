@@ -1,1 +1,1 @@
-export { LEFT_MOVEMENT_ANIMATION } from './left-movement.animation';
+export { TRANSLATE_X_ON_ENTER_ANIMATION } from './translate-x-on-enter.animation';
