@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class PlaygroundStoreService {
-  private readonly isPlaying$$ = new BehaviorSubject<boolean>(false);
+  private readonly isPlaying$$ = new BehaviorSubject<boolean>(true);
   readonly isPlaying$ = this.isPlaying$$.asObservable();
 
   private readonly objectsSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(50);

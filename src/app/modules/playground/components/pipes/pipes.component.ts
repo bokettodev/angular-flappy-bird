@@ -1,17 +1,17 @@
+import { AnimationPlayer } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   HostBinding,
-  HostListener,
   Input,
   OnInit,
 } from '@angular/core';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { TRANSLATE_X_ON_ENTER_ANIMATION } from '@shared/animations';
-import { TranslateXOnEnterAnimationParams } from '@shared/interfaces';
+import { TranslateXAnimationParams } from '@shared/interfaces';
+import { AnimationService } from '@shared/services/animation.service';
 
 @UntilDestroy()
 @Component({
@@ -28,7 +28,6 @@ import { TranslateXOnEnterAnimationParams } from '@shared/interfaces';
     </div>
   `,
   styleUrls: ['./pipes.component.scss'],
-  animations: [TRANSLATE_X_ON_ENTER_ANIMATION],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PipesComponent implements OnInit {
@@ -43,44 +42,62 @@ export class PipesComponent implements OnInit {
   @Input()
   parentWidthPx = 0;
 
-  speedPixelsPerSecond = 0;
+  isPlaying = false;
+  translateXAnimation?: AnimationPlayer;
 
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
     private readonly cdRef: ChangeDetectorRef,
     private readonly playgroundStoreService: PlaygroundStoreService,
+    private readonly animationService: AnimationService,
   ) {}
-
-  @HostBinding('@translateXOnEnterAnimation')
-  get hostAnimationParams(): TranslateXOnEnterAnimationParams {
-    const durationSeconds =
-      (this.parentWidthPx + this.pipeHeadWidthPixels * 2) / this.speedPixelsPerSecond;
-
-    return {
-      value: true,
-      params: {
-        duration: `${durationSeconds}s`,
-        from: '100%',
-        to: `-${this.parentWidthPx + this.pipeHeadWidthPixels}px`,
-      },
-    };
-  }
 
   ngOnInit(): void {
     this.initListeners();
   }
 
-  @HostListener('@translateXOnEnterAnimation.done')
-  destroyHost(): void {
-    this.elementRef.nativeElement.remove();
-  }
-
   private initListeners(): void {
+    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
+      this.isPlaying = isPlaying;
+      this.toggleAnimationState({ isPlaying });
+      this.cdRef.detectChanges();
+    });
+
     this.playgroundStoreService.objectsSpeedPixelsPerSecond$
       .pipe(untilDestroyed(this))
       .subscribe((speedPixelsPerSecond) => {
-        this.speedPixelsPerSecond = speedPixelsPerSecond;
+        this.setTranslateXAnimation({ speedPixelsPerSecond });
+        this.toggleAnimationState({ isPlaying: this.isPlaying });
         this.cdRef.detectChanges();
       });
+  }
+
+  private setTranslateXAnimation({ speedPixelsPerSecond }: { speedPixelsPerSecond: number }): void {
+    this.translateXAnimation?.destroy();
+
+    const durationSeconds =
+      (this.parentWidthPx + this.pipeHeadWidthPixels * 2) / speedPixelsPerSecond;
+
+    const params: TranslateXAnimationParams = {
+      duration: `${durationSeconds}s`,
+      from: '100%',
+      to: `-${this.parentWidthPx + this.pipeHeadWidthPixels}px`,
+    };
+
+    this.translateXAnimation = this.animationService
+      .translateXAnimation()
+      .create(this.elementRef.nativeElement, { params });
+
+    this.translateXAnimation?.onDone(() => {
+      this.elementRef.nativeElement.remove();
+    });
+  }
+
+  private toggleAnimationState({ isPlaying }: { isPlaying: boolean }): void {
+    if (isPlaying) {
+      this.translateXAnimation?.play();
+    } else {
+      this.translateXAnimation?.pause();
+    }
   }
 }
