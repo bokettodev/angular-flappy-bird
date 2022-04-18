@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostBinding,
@@ -46,6 +47,7 @@ export class PipesComponent implements OnInit {
 
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
+    private readonly cdRef: ChangeDetectorRef,
     private readonly playgroundStoreService: PlaygroundStoreService,
   ) {}
 
@@ -78,6 +80,7 @@ export class PipesComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe((speedPixelsPerSecond) => {
         this.speedPixelsPerSecond = speedPixelsPerSecond;
+        this.cdRef.detectChanges();
       });
   }
 }

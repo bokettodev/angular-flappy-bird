@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostBinding,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
@@ -24,23 +31,36 @@ export class BackgroundComponent implements OnInit {
   @HostBinding('style.--ground-height')
   groundHeight = '0';
 
-  constructor(private readonly playgroundStoreService: PlaygroundStoreService) {}
+  @HostBinding('style.--animation-play-state')
+  animationPlayState: AnimationPlayState = 'paused';
+
+  constructor(
+    private readonly cdRef: ChangeDetectorRef,
+    private readonly playgroundStoreService: PlaygroundStoreService,
+  ) {}
 
   ngOnInit(): void {
     this.initListeners();
   }
 
   private initListeners(): void {
+    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
+      this.animationPlayState = isPlaying ? 'running' : 'paused';
+      this.cdRef.detectChanges();
+    });
+
     this.playgroundStoreService.backgroundSpeedPixelsPerSecond$
       .pipe(untilDestroyed(this))
       .subscribe((speedPixelsPerSecond) => {
         this.speedPixelsPerSecond = speedPixelsPerSecond;
+        this.cdRef.detectChanges();
       });
 
     this.playgroundStoreService.groundHeight$
       .pipe(untilDestroyed(this))
       .subscribe((groundHeight) => {
         this.groundHeight = groundHeight;
+        this.cdRef.detectChanges();
       });
   }
 }

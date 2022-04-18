@@ -50,6 +50,7 @@ export class ObstaclesComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe((groundHeight) => {
         this.groundHeight = groundHeight;
+        this.cdRef.detectChanges();
       });
   }
 

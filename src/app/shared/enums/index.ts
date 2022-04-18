@@ -1,1 +1,1 @@
-export { ScreenWidth } from './resolutions';
+export { ScreenWidth } from './resolutions.enum';
