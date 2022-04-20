@@ -6,13 +6,20 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
+  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { DomService, HttpService } from '@shared/services';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { SvgService } from '@shared/services';
+import { SubscriptionLike } from 'rxjs';
 
+@UntilDestroy()
 @Component({
   selector: 'fb-svg',
-  template: '',
+  template: `
+    <div #svgContainerRef></div>
+    <ng-content></ng-content>
+  `,
   styleUrls: ['./svg.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,15 +27,17 @@ import { DomService, HttpService } from '@shared/services';
 export class SvgComponent implements OnChanges {
   @Input() @HostBinding('style.--color') color?: string;
   @Input() @HostBinding('style.--color-on-hover') colorOnHover?: string;
+  @Input() @HostBinding('style.--size') size?: string;
   @Input() @HostBinding('style.--width') width?: string;
   @Input() @HostBinding('style.--height') height?: string;
   @Input() icon?: string;
 
-  constructor(
-    private readonly elementRef: ElementRef<HTMLElement>,
-    private readonly domService: DomService,
-    private readonly httpService: HttpService,
-  ) {}
+  @ViewChild('svgContainerRef', { static: true })
+  private readonly svgContainerRef!: ElementRef<HTMLElement>;
+
+  private svgDownloadSub?: SubscriptionLike;
+
+  constructor(private readonly svgService: SvgService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['icon']) {
@@ -40,17 +49,12 @@ export class SvgComponent implements OnChanges {
     if (!this.icon) {
       return;
     }
-
-    this.httpService
-      .get<string>({
-        urlHost: this.domService.window.origin,
-        urlPath: `assets/images/svg/${this.icon}.svg`,
-        httpClientOptions: { responseType: 'text' },
-      })
-      .subscribe((svgText) => this.injectSvg(svgText));
-  }
-
-  private injectSvg(svgText: string): void {
-    this.elementRef.nativeElement.innerHTML = svgText;
+    this.svgDownloadSub?.unsubscribe();
+    this.svgDownloadSub = this.svgService
+      .getSvg(this.icon)
+      .pipe(untilDestroyed(this))
+      .subscribe((svg) => {
+        this.svgContainerRef.nativeElement.innerHTML = svg;
+      });
   }
 }

@@ -1,10 +1,21 @@
 fb-svg {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--width);
-  height: var(--height);
   color: var(--color);
+  transition: color 0.2s ease;
+
+  > div {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    > svg {
+      width: var(--size, var(--width));
+      height: var(--size, var(--height));
+    }
+  }
 
   &:hover {
     color: var(--color-on-hover, var(--color));
