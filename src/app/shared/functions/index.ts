@@ -1,1 +1,1 @@
-export { trackByFn } from './track-by-fn';
+export { randomInteger } from './random-integer.function';

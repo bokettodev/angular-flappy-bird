@@ -14,7 +14,6 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 40%;
 
   &__head {
     width: 100%;
@@ -32,10 +31,12 @@
 
   &:first-child {
     top: 0;
+    height: var(--top-pipe-height);
     transform: rotateX(180deg);
   }
 
   &:last-child {
     bottom: 0;
+    height: var(--bottom-pipe-height);
   }
 }

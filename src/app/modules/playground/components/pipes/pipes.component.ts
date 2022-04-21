@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { randomInteger } from '@shared/functions';
 import { TranslateXAnimationParams } from '@shared/interfaces';
 import { AnimationService } from '@shared/services/animation.service';
 
@@ -42,6 +43,12 @@ export class PipesComponent implements OnInit {
   @Input()
   parentWidthPx = 0;
 
+  @HostBinding('style.--top-pipe-height')
+  topPipeHeight = '30%';
+
+  @HostBinding('style.--bottom-pipe-height')
+  bottomPipeHeight = '50%';
+
   isPlaying = false;
   translateXAnimation?: AnimationPlayer;
 
@@ -53,7 +60,16 @@ export class PipesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.initPipesHeights();
     this.initListeners();
+  }
+
+  private initPipesHeights(): void {
+    const topPipeHeightPercentage = randomInteger(10, 70);
+    const bottomPipeHeightPercentage = 100 - topPipeHeightPercentage - 20;
+
+    this.topPipeHeight = `${topPipeHeightPercentage}%`;
+    this.bottomPipeHeight = `${bottomPipeHeightPercentage}%`;
   }
 
   private initListeners(): void {
