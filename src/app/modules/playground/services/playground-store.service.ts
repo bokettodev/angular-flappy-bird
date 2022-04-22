@@ -1,19 +1,27 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()
 export class PlaygroundStoreService {
-  private readonly isPlaying$$ = new BehaviorSubject<boolean>(true);
-  readonly isPlaying$ = this.isPlaying$$.asObservable();
+  readonly isPlaying$: Observable<boolean>;
+  readonly objectsSpeedPixelsPerSecond$: Observable<number>;
+  readonly backgroundSpeedPixelsPerSecond$: Observable<number>;
+  readonly pipesHorizontalIndentPixels$: Observable<number>;
+  readonly groundHeight$: Observable<string>;
 
-  private readonly objectsSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(50);
-  readonly objectsSpeedPixelsPerSecond$ = this.objectsSpeedPixelsPerSecond$$.asObservable();
+  private readonly isPlaying$$ = new BehaviorSubject(true);
+  private readonly objectsSpeedPixelsPerSecond$$ = new BehaviorSubject(50);
+  private readonly backgroundSpeedPixelsPerSecond$$ = new BehaviorSubject(10);
+  private readonly groundHeight$$ = new BehaviorSubject('22%');
+  private readonly pipesHorizontalIndentPixels$$ = new BehaviorSubject(25);
 
-  private readonly backgroundSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(10);
-  readonly backgroundSpeedPixelsPerSecond$ = this.backgroundSpeedPixelsPerSecond$$.asObservable();
-
-  private readonly groundHeight$$ = new BehaviorSubject<string>('22%');
-  readonly groundHeight$ = this.groundHeight$$.asObservable();
+  constructor() {
+    this.isPlaying$ = this.isPlaying$$.asObservable();
+    this.objectsSpeedPixelsPerSecond$ = this.objectsSpeedPixelsPerSecond$$.asObservable();
+    this.backgroundSpeedPixelsPerSecond$ = this.backgroundSpeedPixelsPerSecond$$.asObservable();
+    this.pipesHorizontalIndentPixels$ = this.pipesHorizontalIndentPixels$$.asObservable();
+    this.groundHeight$ = this.groundHeight$$.asObservable();
+  }
 
   setIsPlaying({ isPlaying }: { isPlaying: boolean }): void {
     this.isPlaying$$.next(isPlaying);
@@ -27,7 +35,11 @@ export class PlaygroundStoreService {
     this.backgroundSpeedPixelsPerSecond$$.next(speed);
   }
 
-  setGroundHeight({ groundHeight }: { groundHeight: string }): void {
-    this.groundHeight$$.next(groundHeight);
+  setPipesHorizontalIndentPixels({ indent }: { indent: number }): void {
+    this.backgroundSpeedPixelsPerSecond$$.next(indent);
+  }
+
+  setGroundHeight({ height }: { height: string }): void {
+    this.groundHeight$$.next(height);
   }
 }

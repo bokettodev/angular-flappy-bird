@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { interval } from 'rxjs';
+import { BehaviorSubject, delay, of, SubscriptionLike } from 'rxjs';
 import { PipesComponent } from '../pipes/pipes.component';
 
 @UntilDestroy()
@@ -25,6 +25,14 @@ import { PipesComponent } from '../pipes/pipes.component';
 export class ObstaclesComponent implements OnInit {
   @HostBinding('style.--ground-height')
   groundHeight = '0';
+
+  private objectsSpeedPixelsPerSecond?: number;
+  private pipesHorizontalIndentPixels?: number;
+  private pipesGeneratorSub?: SubscriptionLike;
+  private lastPipesCreatedAt?: Date;
+  private pipesGeneratorIntervalMillisecondsAfterPause = 0;
+
+  intervalValue$ = new BehaviorSubject(1);
 
   @ViewChild('pipesContainerRef', { read: ViewContainerRef, static: true })
   private readonly pipesContainerRef!: ViewContainerRef;
@@ -42,25 +50,80 @@ export class ObstaclesComponent implements OnInit {
 
   ngOnInit(): void {
     this.initListeners();
-    this.runPipesCreator();
+  }
+
+  private get pipesGeneratorIntervalMilliseconds(): number {
+    if (!this.objectsSpeedPixelsPerSecond || !this.pipesHorizontalIndentPixels) {
+      return 0;
+    }
+    const indentWithPipeWidth = this.pipesHorizontalIndentPixels + 52;
+    const pipesGeneratorIntervalSeconds = indentWithPipeWidth / this.objectsSpeedPixelsPerSecond;
+    return pipesGeneratorIntervalSeconds * 1000;
   }
 
   private initListeners(): void {
+    this.playgroundStoreService.objectsSpeedPixelsPerSecond$
+      .pipe(untilDestroyed(this))
+      .subscribe((objectsSpeedPixelsPerSecond) => {
+        this.objectsSpeedPixelsPerSecond = objectsSpeedPixelsPerSecond;
+        this.cdRef.detectChanges();
+      });
+
+    this.playgroundStoreService.pipesHorizontalIndentPixels$
+      .pipe(untilDestroyed(this))
+      .subscribe((pipesHorizontalIndentPixels) => {
+        this.pipesHorizontalIndentPixels = pipesHorizontalIndentPixels;
+        this.cdRef.detectChanges();
+      });
+
     this.playgroundStoreService.groundHeight$
       .pipe(untilDestroyed(this))
       .subscribe((groundHeight) => {
         this.groundHeight = groundHeight;
         this.cdRef.detectChanges();
       });
+
+    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
+      if (isPlaying) {
+        this.runPipesGenerator();
+      } else {
+        this.stopPipesGenerator();
+      }
+    });
   }
 
-  private runPipesCreator(): void {
-    interval(3000)
-      .pipe(untilDestroyed(this))
+  private runPipesGenerator(): void {
+    this.pipesGeneratorSub?.unsubscribe();
+    this.pipesGeneratorSub = of(true)
+      .pipe(
+        delay(
+          this.pipesGeneratorIntervalMillisecondsAfterPause ||
+            this.pipesGeneratorIntervalMilliseconds,
+        ),
+        untilDestroyed(this),
+      )
       .subscribe(() => {
         const pipesComponentRef = this.pipesContainerRef.createComponent(PipesComponent);
         pipesComponentRef.instance.parentWidthPx = this.elementRef.nativeElement.clientWidth;
+
+        this.pipesGeneratorIntervalMillisecondsAfterPause = 0;
+        this.lastPipesCreatedAt = new Date();
         this.cdRef.detectChanges();
+
+        this.runPipesGenerator();
       });
+  }
+
+  private stopPipesGenerator(): void {
+    if (this.lastPipesCreatedAt) {
+      const pipesGeneratorIntervalMilliseconds = Math.abs(
+        this.lastPipesCreatedAt.getTime() - new Date().getTime(),
+      );
+
+      this.pipesGeneratorIntervalMillisecondsAfterPause =
+        this.pipesGeneratorIntervalMilliseconds - pipesGeneratorIntervalMilliseconds;
+    }
+
+    this.pipesGeneratorSub?.unsubscribe();
   }
 }
