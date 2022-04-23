@@ -13,7 +13,7 @@ export class PlaygroundStoreService {
   private readonly objectsSpeedPixelsPerSecond$$ = new BehaviorSubject(50);
   private readonly backgroundSpeedPixelsPerSecond$$ = new BehaviorSubject(10);
   private readonly groundHeight$$ = new BehaviorSubject('22%');
-  private readonly pipesHorizontalIndentPixels$$ = new BehaviorSubject(25);
+  private readonly pipesHorizontalIndentPixels$$ = new BehaviorSubject(150);
 
   constructor() {
     this.isPlaying$ = this.isPlaying$$.asObservable();

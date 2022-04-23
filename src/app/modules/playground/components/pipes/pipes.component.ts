@@ -5,7 +5,6 @@ import {
   Component,
   ElementRef,
   HostBinding,
-  Input,
   OnInit,
 } from '@angular/core';
 import { PlaygroundStoreService } from '@modules/playground/services';
@@ -32,28 +31,23 @@ import { AnimationService } from '@shared/services/animation.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PipesComponent implements OnInit {
-  @Input()
-  @HostBinding('style.--pipe-head-width-pixels')
-  pipeHeadWidthPixels = 52;
-
-  @Input()
-  @HostBinding('style.--pipe-head-height-pixels')
-  pipeHeadHeightPixels = 24;
-
-  @Input()
-  parentWidthPx = 0;
-
   @HostBinding('style.--top-pipe-height')
-  topPipeHeight = '30%';
+  topPipeHeight!: string;
 
   @HostBinding('style.--bottom-pipe-height')
-  bottomPipeHeight = '50%';
+  bottomPipeHeight!: string;
+
+  @HostBinding('style.--pipe-head-width-pixels')
+  readonly pipeHeadWidthPixels = 52;
+
+  @HostBinding('style.--pipe-head-height-pixels')
+  readonly pipeHeadHeightPixels = 24;
 
   isPlaying = false;
   translateXAnimation?: AnimationPlayer;
 
   constructor(
-    private readonly elementRef: ElementRef<HTMLElement>,
+    public readonly elementRef: ElementRef<HTMLElement>,
     private readonly cdRef: ChangeDetectorRef,
     private readonly playgroundStoreService: PlaygroundStoreService,
     private readonly animationService: AnimationService,
@@ -91,20 +85,20 @@ export class PipesComponent implements OnInit {
   private setTranslateXAnimation({ speedPixelsPerSecond }: { speedPixelsPerSecond: number }): void {
     this.translateXAnimation?.destroy();
 
-    const durationSeconds =
-      (this.parentWidthPx + this.pipeHeadWidthPixels * 2) / speedPixelsPerSecond;
+    const parentWidthPx = this.elementRef.nativeElement.parentElement?.clientWidth || 0;
+    const durationSeconds = (parentWidthPx + this.pipeHeadWidthPixels * 2) / speedPixelsPerSecond;
 
     const params: TranslateXAnimationParams = {
       duration: `${durationSeconds}s`,
       from: '100%',
-      to: `-${this.parentWidthPx + this.pipeHeadWidthPixels}px`,
+      to: `-${parentWidthPx + this.pipeHeadWidthPixels}px`,
     };
 
     this.translateXAnimation = this.animationService
       .translateXAnimation()
       .create(this.elementRef.nativeElement, { params });
 
-    this.translateXAnimation?.onDone(() => {
+    this.translateXAnimation.onDone(() => {
       this.elementRef.nativeElement.remove();
     });
   }
