@@ -1,0 +1,40 @@
+:host {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: calc(100% - var(--ground-height));
+  overflow: hidden;
+
+  .bird {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    width: calc(var(--bird-width-pixels) * 1px);
+    height: calc(var(--bird-height-pixels) * 1px);
+    background-repeat: no-repeat;
+    background-size: cover;
+    animation-name: bird-fly;
+    animation-duration: 0.3s;
+    animation-play-state: var(--animation-play-state);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+}
+
+@keyframes bird-fly {
+  0%,
+  100% {
+    background-image: url('/assets/images/png/birds/bluebird-downflap.png');
+  }
+
+  25%,
+  75% {
+    background-image: url('/assets/images/png/birds/bluebird-midflap.png');
+  }
+
+  50% {
+    background-image: url('/assets/images/png/birds/bluebird-upflap.png');
+  }
+}

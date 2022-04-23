@@ -1,4 +1,4 @@
-export { AnimationData } from './animation-data.interface';
-export { IEnvironment } from './environment.interface';
-export { IHttpArguments } from './http-arguments.interface';
-export { TranslateXAnimationParams } from './translate-x-animation-params.interface';
+export * from './animation-data.interface';
+export * from './environment.interface';
+export * from './http-arguments.interface';
+export * from './translate-x-animation-params.interface';

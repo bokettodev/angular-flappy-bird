@@ -1,2 +1,2 @@
-export { AppRoutingModule } from './app-routing.module';
-export { AppComponent } from './app.component';
+export * from './app-routing.module';
+export * from './app.component';

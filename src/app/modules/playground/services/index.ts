@@ -1,1 +1,1 @@
-export { PlaygroundStoreService } from './playground-store.service';
+export * from './playground-store.service';

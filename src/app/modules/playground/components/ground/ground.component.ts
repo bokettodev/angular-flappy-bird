@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   HostBinding,
-  Input,
   OnInit,
 } from '@angular/core';
 import { PlaygroundStoreService } from '@modules/playground/services';
@@ -17,14 +16,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroundComponent implements OnInit {
-  @Input()
-  @HostBinding('style.--ground-image-width-pixels')
-  groundImageWidthPixels = 24;
-
-  @Input()
-  @HostBinding('style.--ground-image-height-pixels')
-  groundImageHeightPixels = 22;
-
   @HostBinding('style.--height')
   height = '0';
 
@@ -33,6 +24,12 @@ export class GroundComponent implements OnInit {
 
   @HostBinding('style.--animation-play-state')
   animationPlayState: AnimationPlayState = 'paused';
+
+  @HostBinding('style.--ground-image-width-pixels')
+  readonly groundImageWidthPixels = 24;
+
+  @HostBinding('style.--ground-image-height-pixels')
+  readonly groundImageHeightPixels = 22;
 
   constructor(
     private readonly cdRef: ChangeDetectorRef,

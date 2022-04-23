@@ -1,1 +1,1 @@
-export { SvgComponent } from './svg/svg.component';
+export * from './svg/svg.component';

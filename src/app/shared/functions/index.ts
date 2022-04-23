@@ -1,1 +1,1 @@
-export { randomInteger } from './random-integer.function';
+export * from './random-integer.function';

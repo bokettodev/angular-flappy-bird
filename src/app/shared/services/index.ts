@@ -1,5 +1,5 @@
-export { AnimationService } from './animation.service';
-export { DomService } from './dom.service';
-export { HttpService } from './http.service';
-export { LocalStorageService } from './local-storage.service';
-export { SvgService } from './svg.service';
+export * from './animation.service';
+export * from './dom.service';
+export * from './http.service';
+export * from './local-storage.service';
+export * from './svg.service';

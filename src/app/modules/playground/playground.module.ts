@@ -4,6 +4,7 @@ import { SvgModule } from '@shared/modules/svg';
 import { PlaygroundRoutingModule } from './playground-routing.module';
 import {
   BackgroundComponent,
+  BirdComponent,
   GroundComponent,
   ObstaclesComponent,
   PipesComponent,
@@ -14,6 +15,7 @@ import { PlaygroundStoreService } from './services';
 @NgModule({
   declarations: [
     BackgroundComponent,
+    BirdComponent,
     GroundComponent,
     ObstaclesComponent,
     PipesComponent,

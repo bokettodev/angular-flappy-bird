@@ -1,1 +1,1 @@
-export { HttpOptionValue } from './http-option-value.type';
+export * from './http-option-value.type';

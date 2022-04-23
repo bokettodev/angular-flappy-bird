@@ -25,7 +25,7 @@ import { PipesComponent } from '../pipes/pipes.component';
 })
 export class ObstaclesComponent implements OnInit {
   @HostBinding('style.--ground-height')
-  groundHeight = '0';
+  groundHeight?: string;
 
   private isPlaying = false;
   private pipesHorizontalIndentPixels?: number;
