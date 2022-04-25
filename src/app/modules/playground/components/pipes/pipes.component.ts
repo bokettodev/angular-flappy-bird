@@ -10,7 +10,7 @@ import {
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { randomInteger } from '@shared/functions';
-import { TranslateXAnimationParams } from '@shared/interfaces';
+import { TranslateAnimationParams } from '@shared/interfaces';
 import { AnimationService } from '@shared/services/animation.service';
 
 @UntilDestroy()
@@ -43,8 +43,8 @@ export class PipesComponent implements OnInit {
   @HostBinding('style.--pipe-head-height-pixels')
   readonly pipeHeadHeightPixels = 24;
 
-  isPlaying = false;
-  translateXAnimation?: AnimationPlayer;
+  private isPlaying = false;
+  private translateXAnimation?: AnimationPlayer;
 
   constructor(
     public readonly elementRef: ElementRef<HTMLElement>,
@@ -88,9 +88,9 @@ export class PipesComponent implements OnInit {
     const parentWidthPx = this.elementRef.nativeElement.parentElement?.clientWidth || 0;
     const durationSeconds = (parentWidthPx + this.pipeHeadWidthPixels * 2) / speedPixelsPerSecond;
 
-    const params: TranslateXAnimationParams = {
+    const params: TranslateAnimationParams = {
       duration: `${durationSeconds}s`,
-      from: '100%',
+      timing: 'linear',
       to: `-${parentWidthPx + this.pipeHeadWidthPixels}px`,
     };
 
