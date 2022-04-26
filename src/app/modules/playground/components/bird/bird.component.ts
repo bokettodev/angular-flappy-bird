@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   HostBinding,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { PlaygroundStoreService } from '@modules/playground/services';
@@ -19,7 +20,7 @@ import { AnimationService, DomService } from '@shared/services';
   styleUrls: ['./bird.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BirdComponent implements OnInit {
+export class BirdComponent implements OnInit, OnDestroy {
   @HostBinding('style.--animation-play-state')
   animationPlayState: AnimationPlayState = 'paused';
 
@@ -61,7 +62,11 @@ export class BirdComponent implements OnInit {
         timing: 'linear',
         to: `-${toPixels}px`,
       });
-    }, 2000);
+    }, durationSeconds * 1000);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyAnimationPlayer();
   }
 
   private initListeners(): void {
@@ -78,34 +83,27 @@ export class BirdComponent implements OnInit {
     });
   }
 
-  private setTranslateYAnimation({
-    duration,
-    timing,
-    to,
-  }: {
-    duration: string;
-    timing: string;
-    to: string;
-  }): void {
-    this.translateYAnimation?.destroy();
-    const params: TranslateAnimationParams = { duration, timing, to };
+  private setTranslateYAnimation(params: TranslateAnimationParams): void {
+    this.fixBirdTopPosition();
+    this.destroyAnimationPlayer();
 
     this.translateYAnimation = this.animationService
       .translateYAnimation()
       .create(this.elementRef.nativeElement, { params });
 
-    this.translateYAnimation.onDone(() => {
-      const { top } = this.elementRef.nativeElement.getBoundingClientRect();
-      this.domService.renderer.setStyle(this.elementRef.nativeElement, 'top', `${top}px`);
-    });
-
-    this.translateYAnimation.onDestroy(() => {
-      this.translateYAnimation = undefined;
-
-      const { top } = this.elementRef.nativeElement.getBoundingClientRect();
-      this.domService.renderer.setStyle(this.elementRef.nativeElement, 'top', `${top}px`);
-    });
-
     this.translateYAnimation.play();
+  }
+
+  private destroyAnimationPlayer(): void {
+    if (!this.translateYAnimation) {
+      return;
+    }
+    this.translateYAnimation?.destroy();
+    this.translateYAnimation = undefined;
+  }
+
+  private fixBirdTopPosition(): void {
+    const { top } = this.elementRef.nativeElement.getBoundingClientRect();
+    this.domService.renderer.setStyle(this.elementRef.nativeElement, 'top', `${top}px`);
   }
 }

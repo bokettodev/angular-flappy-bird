@@ -1,6 +1,5 @@
 :host {
   position: absolute;
-  top: calc(50% - var(--ground-height) / 2 - var(--bird-height-pixels) * 1px / 2);
   left: calc(50% - var(--bird-width-pixels) * 1px / 2);
   display: block;
   width: calc(var(--bird-width-pixels) * 1px);
