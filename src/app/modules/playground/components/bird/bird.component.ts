@@ -33,6 +33,7 @@ export class BirdComponent implements OnInit, OnDestroy {
   @HostBinding('style.--bird-height-pixels')
   readonly birdHeightPixels = 24;
 
+  isPlaying = false;
   private translateYAnimation?: AnimationPlayer;
 
   constructor(
@@ -46,8 +47,8 @@ export class BirdComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initListeners();
 
-    const toPixels = 300;
-    const pixelsPerSecond = 100;
+    const toPixels = 600;
+    const pixelsPerSecond = 300;
     const durationSeconds = toPixels / pixelsPerSecond;
 
     this.setTranslateYAnimation({
@@ -56,13 +57,21 @@ export class BirdComponent implements OnInit, OnDestroy {
       to: `${toPixels}px`,
     });
 
-    setTimeout(() => {
+    setInterval(() => {
       this.setTranslateYAnimation({
         duration: `${durationSeconds}s`,
         timing: 'linear',
-        to: `-${toPixels}px`,
+        to: `-${toPixels / 2}px`,
       });
-    }, durationSeconds * 1000);
+
+      setTimeout(() => {
+        this.setTranslateYAnimation({
+          duration: `${durationSeconds}s`,
+          timing: 'linear',
+          to: `${toPixels / 2}px`,
+        });
+      }, 1000);
+    }, 2000);
   }
 
   ngOnDestroy(): void {
@@ -78,7 +87,15 @@ export class BirdComponent implements OnInit, OnDestroy {
       });
 
     this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
-      this.animationPlayState = isPlaying ? 'running' : 'paused';
+      this.isPlaying = isPlaying;
+      this.animationPlayState = this.isPlaying ? 'running' : 'paused';
+
+      if (this.isPlaying) {
+        this.translateYAnimation?.play();
+      } else {
+        this.translateYAnimation?.pause();
+      }
+
       this.cdRef.detectChanges();
     });
   }
@@ -91,6 +108,9 @@ export class BirdComponent implements OnInit, OnDestroy {
       .translateYAnimation()
       .create(this.elementRef.nativeElement, { params });
 
+    if (!this.isPlaying) {
+      return;
+    }
     this.translateYAnimation.play();
   }
 
