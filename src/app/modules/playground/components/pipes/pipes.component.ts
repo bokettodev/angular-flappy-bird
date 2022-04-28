@@ -54,19 +54,34 @@ export class PipesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.initPipesHeights();
     this.initListeners();
   }
 
-  private initPipesHeights(): void {
+  private initPipesHeights({
+    pipesVerticalIndentPixels,
+  }: {
+    pipesVerticalIndentPixels: number;
+  }): void {
+    const pipesVerticalIndentPercentage = Math.ceil(
+      (pipesVerticalIndentPixels / this.elementRef.nativeElement.clientHeight) * 100,
+    );
+
     const topPipeHeightPercentage = randomInteger(10, 70);
-    const bottomPipeHeightPercentage = 100 - topPipeHeightPercentage - 20;
+    const bottomPipeHeightPercentage =
+      100 - topPipeHeightPercentage - pipesVerticalIndentPercentage;
 
     this.topPipeHeight = `${topPipeHeightPercentage}%`;
     this.bottomPipeHeight = `${bottomPipeHeightPercentage}%`;
   }
 
   private initListeners(): void {
+    this.playgroundStoreService.pipesVerticalIndentPixels$
+      .pipe(untilDestroyed(this))
+      .subscribe((pipesVerticalIndentPixels) => {
+        this.initPipesHeights({ pipesVerticalIndentPixels });
+        this.cdRef.detectChanges();
+      });
+
     this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
       this.isPlaying = isPlaying;
       this.toggleAnimationState({ isPlaying });
