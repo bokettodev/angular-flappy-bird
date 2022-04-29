@@ -5,9 +5,16 @@
   width: calc(var(--bird-width-pixels) * 1px);
   height: calc(var(--bird-height-pixels) * 1px);
   overflow: hidden;
-  background-repeat: no-repeat;
-  background-size: cover;
-  animation: bird-wings 0.3s var(--animation-play-state) linear infinite;
+
+  &::after {
+    display: block;
+    width: 100%;
+    height: 100%;
+    content: '';
+    background-repeat: no-repeat;
+    background-size: cover;
+    animation: bird-wings 0.3s var(--animation-play-state) linear infinite;
+  }
 }
 
 @keyframes bird-wings {

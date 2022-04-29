@@ -1,17 +1,16 @@
-import { AnimationPlayer } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   HostBinding,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TranslateAnimationParams } from '@shared/interfaces';
-import { AnimationService, DomService } from '@shared/services';
+import { DomService } from '@shared/services';
+import { SubscriptionLike, timer } from 'rxjs';
 
 @UntilDestroy()
 @Component({
@@ -20,24 +19,23 @@ import { AnimationService, DomService } from '@shared/services';
   styleUrls: ['./bird.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BirdComponent implements OnInit, OnDestroy {
+export class BirdComponent implements OnInit {
   @HostBinding('style.--animation-play-state')
-  animationPlayState: AnimationPlayState = 'paused';
-
-  @HostBinding('style.--ground-height')
-  groundHeight?: string;
+  animationPlayState?: AnimationPlayState;
 
   @HostBinding('style.--bird-width-pixels')
-  readonly birdWidthPixels = 34;
+  birdWidthPixels?: number;
 
   @HostBinding('style.--bird-height-pixels')
-  readonly birdHeightPixels = 24;
+  birdHeightPixels?: number;
 
-  isPlaying = false;
-  private translateYAnimation?: AnimationPlayer;
+  private isPlaying = false;
+  private maxTopPixels?: number;
+  private flyUpStepPixels?: number;
+  private verticalSpeedPixelsPerSecond?: number;
+  private flyDownTimerSub?: SubscriptionLike;
 
   constructor(
-    private readonly animationService: AnimationService,
     private readonly cdRef: ChangeDetectorRef,
     private readonly domService: DomService,
     private readonly elementRef: ElementRef<HTMLElement>,
@@ -46,10 +44,68 @@ export class BirdComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initListeners();
+    this.initPosition();
+  }
 
-    const toPixels = 600;
-    const pixelsPerSecond = 300;
-    const durationSeconds = toPixels / pixelsPerSecond;
+  private get parentHeightPixels(): number {
+    return +(this.elementRef.nativeElement.parentElement?.clientHeight?.toFixed() || 0);
+  }
+
+  private get birdTopPixels(): number {
+    return +this.elementRef.nativeElement.getBoundingClientRect().top.toFixed();
+  }
+
+  private initListeners(): void {
+    this.playgroundStoreService.groundHeight$.pipe(untilDestroyed(this)).subscribe(() => {
+      this.maxTopPixels = +(this.parentHeightPixels * 0.78).toFixed();
+      this.cdRef.detectChanges();
+    });
+
+    this.playgroundStoreService.birdWidthPixels$
+      .pipe(untilDestroyed(this))
+      .subscribe((birdWidthPixels) => {
+        this.birdWidthPixels = birdWidthPixels;
+        this.cdRef.detectChanges();
+      });
+
+    this.playgroundStoreService.birdHeightPixels$
+      .pipe(untilDestroyed(this))
+      .subscribe((birdHeightPixels) => {
+        this.birdHeightPixels = birdHeightPixels;
+        this.cdRef.detectChanges();
+      });
+
+    this.playgroundStoreService.flyUpStepPixels$
+      .pipe(untilDestroyed(this))
+      .subscribe((flyUpStepPixels) => {
+        this.flyUpStepPixels = flyUpStepPixels;
+        this.cdRef.detectChanges();
+      });
+
+    this.playgroundStoreService.birdVerticalSpeedPixelsPerSecond$
+      .pipe(untilDestroyed(this))
+      .subscribe((speed) => {
+        this.verticalSpeedPixelsPerSecond = speed;
+        this.cdRef.detectChanges();
+      });
+
+    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
+      this.isPlaying = isPlaying;
+      this.animationPlayState = this.isPlaying ? 'running' : 'paused';
+      this.cdRef.detectChanges();
+    });
+
+    this.playgroundStoreService.flyUp$.pipe(untilDestroyed(this)).subscribe(() => this.flyUp());
+  }
+
+  private flyUp(): void {
+    if (!this.flyUpStepPixels || !this.verticalSpeedPixelsPerSecond) {
+      return;
+    }
+    this.flyDownTimerSub?.unsubscribe();
+
+    const toPixels = this.birdTopPixels - this.flyUpStepPixels;
+    const durationSeconds = +(this.flyUpStepPixels / this.verticalSpeedPixelsPerSecond).toFixed(2);
 
     this.setTranslateYAnimation({
       duration: `${durationSeconds}s`,
@@ -57,73 +113,51 @@ export class BirdComponent implements OnInit, OnDestroy {
       to: `${toPixels}px`,
     });
 
-    setInterval(() => {
-      this.setTranslateYAnimation({
-        duration: `${durationSeconds}s`,
-        timing: 'linear',
-        to: `-${toPixels / 2}px`,
-      });
-
-      setTimeout(() => {
-        this.setTranslateYAnimation({
-          duration: `${durationSeconds}s`,
-          timing: 'linear',
-          to: `${toPixels / 2}px`,
-        });
-      }, 1000);
-    }, 2000);
-  }
-
-  ngOnDestroy(): void {
-    this.destroyAnimationPlayer();
-  }
-
-  private initListeners(): void {
-    this.playgroundStoreService.groundHeight$
+    this.flyDownTimerSub = timer(durationSeconds * 1000)
       .pipe(untilDestroyed(this))
-      .subscribe((groundHeight) => {
-        this.groundHeight = groundHeight;
-        this.cdRef.detectChanges();
-      });
+      .subscribe(() => this.flyDown());
+  }
 
-    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
-      this.isPlaying = isPlaying;
-      this.animationPlayState = this.isPlaying ? 'running' : 'paused';
+  private flyDown(): void {
+    if (!this.maxTopPixels || !this.verticalSpeedPixelsPerSecond) {
+      return;
+    }
 
-      if (this.isPlaying) {
-        this.translateYAnimation?.play();
-      } else {
-        this.translateYAnimation?.pause();
-      }
+    const toPixels = this.maxTopPixels;
+    const durationSeconds = (
+      (toPixels - this.birdTopPixels) /
+      this.verticalSpeedPixelsPerSecond
+    ).toFixed(2);
 
-      this.cdRef.detectChanges();
+    this.setTranslateYAnimation({
+      duration: `${durationSeconds}s`,
+      timing: 'linear',
+      to: `${toPixels}px`,
     });
   }
 
-  private setTranslateYAnimation(params: TranslateAnimationParams): void {
-    this.fixBirdTopPosition();
-    this.destroyAnimationPlayer();
+  private setTranslateYAnimation({ duration, timing, to }: TranslateAnimationParams): void {
+    this.domService.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transition',
+      `transform ${duration} ${timing}`,
+    );
 
-    this.translateYAnimation = this.animationService
-      .translateYAnimation()
-      .create(this.elementRef.nativeElement, { params });
-
-    if (!this.isPlaying) {
-      return;
-    }
-    this.translateYAnimation.play();
+    this.domService.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transform',
+      `translateY(${to})`,
+    );
   }
 
-  private destroyAnimationPlayer(): void {
-    if (!this.translateYAnimation) {
+  private initPosition(): void {
+    if (!this.birdHeightPixels) {
       return;
     }
-    this.translateYAnimation?.destroy();
-    this.translateYAnimation = undefined;
-  }
-
-  private fixBirdTopPosition(): void {
-    const { top } = this.elementRef.nativeElement.getBoundingClientRect();
-    this.domService.renderer.setStyle(this.elementRef.nativeElement, 'top', `${top}px`);
+    this.domService.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'transform',
+      `translateY(${this.parentHeightPixels / 2 - this.birdHeightPixels / 2}px)`,
+    );
   }
 }
