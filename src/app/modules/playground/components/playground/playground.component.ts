@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener } from '@angular/core';
+import { PlaygroundStoreService } from '@modules/playground/services';
 
 @Component({
   selector: 'fb-playground',
@@ -6,4 +7,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./playground.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlaygroundComponent {}
+export class PlaygroundComponent {
+  constructor(private readonly playgroundStoreService: PlaygroundStoreService) {}
+
+  @HostListener('click')
+  flyUp(): void {
+    this.playgroundStoreService.flyUp();
+  }
+}

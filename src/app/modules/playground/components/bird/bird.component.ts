@@ -21,18 +21,18 @@ import { SubscriptionLike, timer } from 'rxjs';
 })
 export class BirdComponent implements OnInit {
   @HostBinding('style.--animation-play-state')
-  animationPlayState?: AnimationPlayState;
+  animationPlayState!: AnimationPlayState;
 
   @HostBinding('style.--bird-width-pixels')
-  birdWidthPixels?: number;
+  birdWidthPixels!: number;
 
   @HostBinding('style.--bird-height-pixels')
-  birdHeightPixels?: number;
+  birdHeightPixels!: number;
 
   private isPlaying = false;
-  private maxTopPixels?: number;
-  private flyUpStepPixels?: number;
-  private verticalSpeedPixelsPerSecond?: number;
+  private maxTopPixels!: number;
+  private flyUpStepPixels!: number;
+  private verticalSpeedPixelsPerSecond!: number;
   private flyDownTimerSub?: SubscriptionLike;
 
   constructor(
@@ -99,9 +99,6 @@ export class BirdComponent implements OnInit {
   }
 
   private flyUp(): void {
-    if (!this.flyUpStepPixels || !this.verticalSpeedPixelsPerSecond) {
-      return;
-    }
     this.flyDownTimerSub?.unsubscribe();
 
     const toPixels = this.birdTopPixels - this.flyUpStepPixels;
@@ -109,7 +106,7 @@ export class BirdComponent implements OnInit {
 
     this.setTranslateYAnimation({
       duration: `${durationSeconds}s`,
-      timing: 'linear',
+      timing: 'ease-out',
       to: `${toPixels}px`,
     });
 
@@ -119,10 +116,6 @@ export class BirdComponent implements OnInit {
   }
 
   private flyDown(): void {
-    if (!this.maxTopPixels || !this.verticalSpeedPixelsPerSecond) {
-      return;
-    }
-
     const toPixels = this.maxTopPixels;
     const durationSeconds = (
       (toPixels - this.birdTopPixels) /
@@ -131,7 +124,7 @@ export class BirdComponent implements OnInit {
 
     this.setTranslateYAnimation({
       duration: `${durationSeconds}s`,
-      timing: 'linear',
+      timing: 'ease-in',
       to: `${toPixels}px`,
     });
   }

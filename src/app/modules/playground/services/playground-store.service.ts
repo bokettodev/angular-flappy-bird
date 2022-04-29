@@ -17,7 +17,7 @@ export class PlaygroundStoreService {
   readonly pipesVerticalIndentPixels$: Observable<number>;
   readonly groundHeight$: Observable<string>;
 
-  private readonly birdVerticalSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(300);
+  private readonly birdVerticalSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(450);
   private readonly birdWidthPixels$$ = new BehaviorSubject<number>(34);
   private readonly birdHeightPixels$$ = new BehaviorSubject<number>(24);
 
@@ -27,9 +27,9 @@ export class PlaygroundStoreService {
   );
 
   private readonly isPlaying$$ = new BehaviorSubject<boolean>(true);
-  private readonly objectsSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(50);
+  private readonly objectsSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(100);
   private readonly backgroundSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(10);
-  private readonly pipesHorizontalIndentPixels$$ = new BehaviorSubject<number>(150);
+  private readonly pipesHorizontalIndentPixels$$ = new BehaviorSubject<number>(175);
   private readonly pipesVerticalIndentPixels$$ = new BehaviorSubject<number>(144);
   private readonly groundHeight$$ = new BehaviorSubject<string>('22%');
 
@@ -37,8 +37,10 @@ export class PlaygroundStoreService {
     this.birdVerticalSpeedPixelsPerSecond$ = this.birdVerticalSpeedPixelsPerSecond$$.asObservable();
     this.birdWidthPixels$ = this.birdWidthPixels$$.asObservable();
     this.birdHeightPixels$ = this.birdHeightPixels$$.asObservable();
+
     this.flyUp$ = this.flyUp$$.asObservable();
     this.flyUpStepPixels$ = this.flyUpStepPixels$$.asObservable();
+
     this.isPlaying$ = this.isPlaying$$.asObservable();
     this.objectsSpeedPixelsPerSecond$ = this.objectsSpeedPixelsPerSecond$$.asObservable();
     this.backgroundSpeedPixelsPerSecond$ = this.backgroundSpeedPixelsPerSecond$$.asObservable();
