@@ -9,6 +9,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
+import { COMMON_CHECKER_FREQUENCY_MILLISECONDS } from '@modules/playground/constants';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { interval } from 'rxjs';
@@ -69,7 +70,7 @@ export class ObstaclesComponent implements OnInit {
       this.cdRef.detectChanges();
     });
 
-    interval(100)
+    interval(COMMON_CHECKER_FREQUENCY_MILLISECONDS)
       .pipe(untilDestroyed(this))
       .subscribe(() => {
         if (!this.isPlaying || !this.pipesHorizontalIndentPixels) {
