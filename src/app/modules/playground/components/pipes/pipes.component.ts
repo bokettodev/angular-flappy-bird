@@ -57,6 +57,10 @@ export class PipesComponent implements OnInit {
     this.initListeners();
   }
 
+  private get parentWidthPixels(): number {
+    return this.elementRef.nativeElement.parentElement?.clientWidth || 0;
+  }
+
   private initPipesHeights({
     pipesVerticalIndentPixels,
   }: {
@@ -99,14 +103,13 @@ export class PipesComponent implements OnInit {
 
   private setTranslateXAnimation({ speedPixelsPerSecond }: { speedPixelsPerSecond: number }): void {
     this.translateXAnimation?.destroy();
-
-    const parentWidthPx = this.elementRef.nativeElement.parentElement?.clientWidth || 0;
-    const durationSeconds = (parentWidthPx + this.pipeHeadWidthPixels * 2) / speedPixelsPerSecond;
+    const durationSeconds =
+      (this.parentWidthPixels + this.pipeHeadWidthPixels * 2) / speedPixelsPerSecond;
 
     const params: TranslateAnimationParams = {
       duration: `${durationSeconds}s`,
       timing: 'linear',
-      to: `-${parentWidthPx + this.pipeHeadWidthPixels}px`,
+      to: `-${this.parentWidthPixels + this.pipeHeadWidthPixels}px`,
     };
 
     this.translateXAnimation = this.animationService
