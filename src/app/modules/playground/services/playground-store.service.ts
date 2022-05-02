@@ -3,6 +3,11 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class PlaygroundStoreService {
+  groundElement?: HTMLElement;
+  obstaclesElement?: HTMLElement;
+  actualPipesElement?: HTMLElement;
+  birdElement?: HTMLElement;
+
   readonly birdVerticalSpeedPixelsPerSecond$: Observable<number>;
   readonly birdWidthPixels$: Observable<number>;
   readonly birdHeightPixels$: Observable<number>;

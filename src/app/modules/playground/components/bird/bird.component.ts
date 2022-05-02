@@ -36,11 +36,13 @@ export class BirdComponent implements OnInit {
   private flyDownTimerSub?: SubscriptionLike;
 
   constructor(
-    public readonly elementRef: ElementRef<HTMLElement>,
+    private readonly elementRef: ElementRef<HTMLElement>,
     private readonly cdRef: ChangeDetectorRef,
     private readonly domService: DomService,
     private readonly playgroundStoreService: PlaygroundStoreService,
-  ) {}
+  ) {
+    this.playgroundStoreService.birdElement = this.elementRef.nativeElement;
+  }
 
   ngOnInit(): void {
     this.initListeners();

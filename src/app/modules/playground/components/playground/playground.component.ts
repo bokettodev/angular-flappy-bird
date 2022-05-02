@@ -4,14 +4,11 @@ import {
   Component,
   HostListener,
   OnInit,
-  ViewChild,
 } from '@angular/core';
 import { COMMON_CHECKER_FREQUENCY_MILLISECONDS } from '@modules/playground/constants';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { interval, SubscriptionLike } from 'rxjs';
-import { BirdComponent } from '../bird/bird.component';
-import { GroundComponent } from '../ground/ground.component';
 
 @UntilDestroy()
 @Component({
@@ -21,10 +18,8 @@ import { GroundComponent } from '../ground/ground.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaygroundComponent implements OnInit {
-  @ViewChild('groundComponent', { static: true }) groundComponent!: GroundComponent;
-  @ViewChild('birdComponent', { static: true }) birdComponent!: BirdComponent;
-
-  private groundTouchListenerSub?: SubscriptionLike;
+  private groundCollisionListenerSub?: SubscriptionLike;
+  private pipesCollisionListenerSub?: SubscriptionLike;
 
   constructor(
     private readonly cdRef: ChangeDetectorRef,
@@ -33,7 +28,8 @@ export class PlaygroundComponent implements OnInit {
 
   ngOnInit(): void {
     this.initListeners();
-    this.runGroundTouchListener();
+    this.runGroundCollisionListener();
+    this.runPipesCollisionListener();
   }
 
   @HostListener('click')
@@ -41,33 +37,85 @@ export class PlaygroundComponent implements OnInit {
     this.playgroundStoreService.flyUp();
   }
 
-  private runGroundTouchListener(): void {
-    this.destroyGroundTouchListener();
+  private runGroundCollisionListener(): void {
+    this.destroyGroundCollisionListener();
 
-    this.groundTouchListenerSub = interval(COMMON_CHECKER_FREQUENCY_MILLISECONDS)
+    this.groundCollisionListenerSub = interval(COMMON_CHECKER_FREQUENCY_MILLISECONDS)
       .pipe(untilDestroyed(this))
       .subscribe(() => {
-        const groundRect = this.groundComponent.elementRef.nativeElement.getBoundingClientRect();
-        const birdRect = this.birdComponent.elementRef.nativeElement.getBoundingClientRect();
-        const isBirdTouchedGround = birdRect.bottom >= groundRect.top;
+        if (
+          !this.playgroundStoreService.groundElement ||
+          !this.playgroundStoreService.birdElement
+        ) {
+          return;
+        }
+        const birdRect = this.playgroundStoreService.birdElement.getBoundingClientRect();
+        const groundRect = this.playgroundStoreService.groundElement.getBoundingClientRect();
+        const didBirdCollideWithGround = birdRect.bottom >= groundRect.top;
 
-        if (isBirdTouchedGround) {
+        if (didBirdCollideWithGround) {
           this.playgroundStoreService.setIsPlaying({ isPlaying: false });
           this.cdRef.markForCheck();
         }
       });
   }
 
-  private destroyGroundTouchListener(): void {
-    this.groundTouchListenerSub?.unsubscribe();
+  private destroyGroundCollisionListener(): void {
+    this.groundCollisionListenerSub?.unsubscribe();
+  }
+
+  private runPipesCollisionListener(): void {
+    this.destroyPipesCollisionListener();
+
+    this.pipesCollisionListenerSub = interval(COMMON_CHECKER_FREQUENCY_MILLISECONDS)
+      .pipe(untilDestroyed(this))
+      .subscribe(() => {
+        if (
+          !this.playgroundStoreService.actualPipesElement?.firstElementChild ||
+          !this.playgroundStoreService.actualPipesElement?.lastElementChild ||
+          !this.playgroundStoreService.birdElement
+        ) {
+          return;
+        }
+        const birdRect = this.playgroundStoreService.birdElement.getBoundingClientRect();
+        const topPipeRect =
+          this.playgroundStoreService.actualPipesElement.firstElementChild.getBoundingClientRect();
+        const bottomPipeRect =
+          this.playgroundStoreService.actualPipesElement.lastElementChild.getBoundingClientRect();
+
+        const didBirdCollideWithTopPipe = !(
+          birdRect.right < topPipeRect.left ||
+          birdRect.left > topPipeRect.right ||
+          birdRect.bottom < topPipeRect.top ||
+          birdRect.top > topPipeRect.bottom
+        );
+
+        const didBirdCollideWithBottomPipe = !(
+          birdRect.right < bottomPipeRect.left ||
+          birdRect.left > bottomPipeRect.right ||
+          birdRect.bottom < bottomPipeRect.top ||
+          birdRect.top > bottomPipeRect.bottom
+        );
+
+        if (didBirdCollideWithTopPipe || didBirdCollideWithBottomPipe) {
+          this.playgroundStoreService.setIsPlaying({ isPlaying: false });
+          this.cdRef.detectChanges();
+        }
+      });
+  }
+
+  private destroyPipesCollisionListener(): void {
+    this.pipesCollisionListenerSub?.unsubscribe();
   }
 
   private initListeners(): void {
     this.playgroundStoreService.isPlaying$.subscribe((isPlaying) => {
       if (isPlaying) {
-        this.runGroundTouchListener();
+        this.runGroundCollisionListener();
+        this.runPipesCollisionListener();
       } else {
-        this.destroyGroundTouchListener();
+        this.destroyGroundCollisionListener();
+        this.destroyPipesCollisionListener();
       }
     });
   }

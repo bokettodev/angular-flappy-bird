@@ -7,11 +7,13 @@ import {
   HostBinding,
   OnInit,
 } from '@angular/core';
+import { COMMON_CHECKER_FREQUENCY_MILLISECONDS } from '@modules/playground/constants';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { randomInteger } from '@shared/functions';
 import { TranslateAnimationParams } from '@shared/interfaces';
 import { AnimationService } from '@shared/services/animation.service';
+import { interval, SubscriptionLike } from 'rxjs';
 
 @UntilDestroy()
 @Component({
@@ -45,6 +47,8 @@ export class PipesComponent implements OnInit {
 
   private isPlaying = false;
   private translateXAnimation?: AnimationPlayer;
+  private birdWidthPixels!: number;
+  private activeZoneListenerSub?: SubscriptionLike;
 
   constructor(
     public readonly elementRef: ElementRef<HTMLElement>,
@@ -79,6 +83,28 @@ export class PipesComponent implements OnInit {
   }
 
   private initListeners(): void {
+    this.playgroundStoreService.birdWidthPixels$
+      .pipe(untilDestroyed(this))
+      .subscribe((birdWidthPixels) => {
+        this.birdWidthPixels = birdWidthPixels;
+        this.cdRef.detectChanges();
+      });
+
+    this.activeZoneListenerSub = interval(COMMON_CHECKER_FREQUENCY_MILLISECONDS)
+      .pipe(untilDestroyed(this))
+      .subscribe(() => {
+        const pipesRect = this.elementRef.nativeElement.getBoundingClientRect();
+        const activeZoneStart = this.parentWidthPixels / 2 + this.birdWidthPixels / 2;
+        const activeZoneEnd = activeZoneStart - this.birdWidthPixels;
+
+        if (pipesRect.left > activeZoneEnd && !this.playgroundStoreService.actualPipesElement) {
+          this.playgroundStoreService.actualPipesElement = this.elementRef.nativeElement;
+        } else if (activeZoneEnd > pipesRect.right) {
+          this.playgroundStoreService.actualPipesElement = undefined;
+          this.activeZoneListenerSub?.unsubscribe();
+        }
+      });
+
     this.playgroundStoreService.pipesVerticalIndentPixels$
       .pipe(untilDestroyed(this))
       .subscribe((pipesVerticalIndentPixels) => {

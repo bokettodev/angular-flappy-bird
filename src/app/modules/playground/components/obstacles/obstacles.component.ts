@@ -29,7 +29,7 @@ export class ObstaclesComponent implements OnInit {
   groundHeight?: string;
 
   private isPlaying = false;
-  private pipesHorizontalIndentPixels?: number;
+  private pipesHorizontalIndentPixels!: number;
   private lastPipesComponentRef?: ComponentRef<PipesComponent>;
 
   @ViewChild('pipesContainerRef', { read: ViewContainerRef, static: true })
@@ -39,7 +39,9 @@ export class ObstaclesComponent implements OnInit {
     private readonly elementRef: ElementRef<HTMLElement>,
     private readonly cdRef: ChangeDetectorRef,
     private readonly playgroundStoreService: PlaygroundStoreService,
-  ) {}
+  ) {
+    this.playgroundStoreService.obstaclesElement = this.elementRef.nativeElement;
+  }
 
   @HostBinding('style.--host-width-px')
   get hostWidthPx(): number {
@@ -73,7 +75,7 @@ export class ObstaclesComponent implements OnInit {
     interval(COMMON_CHECKER_FREQUENCY_MILLISECONDS)
       .pipe(untilDestroyed(this))
       .subscribe(() => {
-        if (!this.isPlaying || !this.pipesHorizontalIndentPixels) {
+        if (!this.isPlaying) {
           return;
         }
         if (!this.lastPipesComponentRef) {

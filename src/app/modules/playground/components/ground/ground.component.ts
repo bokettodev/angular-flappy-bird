@@ -36,7 +36,9 @@ export class GroundComponent implements OnInit {
     public readonly elementRef: ElementRef<HTMLElement>,
     private readonly cdRef: ChangeDetectorRef,
     private readonly playgroundStoreService: PlaygroundStoreService,
-  ) {}
+  ) {
+    this.playgroundStoreService.groundElement = this.elementRef.nativeElement;
+  }
 
   ngOnInit(): void {
     this.initListeners();
