@@ -9,7 +9,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { COMMON_CHECKER_FREQUENCY_MILLISECONDS } from '@modules/playground/constants';
+import { CheckerFrequencyMs } from '@modules/playground/enums';
 import { PlaygroundStoreService } from '@modules/playground/services';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { interval } from 'rxjs';
@@ -31,6 +31,7 @@ export class ObstaclesComponent implements OnInit {
   private isPlaying = false;
   private pipesHorizontalIndentPixels!: number;
   private lastPipesComponentRef?: ComponentRef<PipesComponent>;
+  private birdWidthPixels!: number;
 
   @ViewChild('pipesContainerRef', { read: ViewContainerRef, static: true })
   private readonly pipesContainerRef!: ViewContainerRef;
@@ -53,6 +54,13 @@ export class ObstaclesComponent implements OnInit {
   }
 
   private initListeners(): void {
+    this.playgroundStoreService.birdWidthPixels$
+      .pipe(untilDestroyed(this))
+      .subscribe((birdWidthPixels) => {
+        this.birdWidthPixels = birdWidthPixels;
+        this.cdRef.detectChanges();
+      });
+
     this.playgroundStoreService.pipesHorizontalIndentPixels$
       .pipe(untilDestroyed(this))
       .subscribe((pipesHorizontalIndentPixels) => {
@@ -67,12 +75,33 @@ export class ObstaclesComponent implements OnInit {
         this.cdRef.detectChanges();
       });
 
-    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
-      this.isPlaying = isPlaying;
-      this.cdRef.detectChanges();
-    });
+    interval(CheckerFrequencyMs.NearestPipesSetter)
+      .pipe(untilDestroyed(this))
+      .subscribe(() => {
+        if (!this.isPlaying) {
+          return;
+        }
 
-    interval(COMMON_CHECKER_FREQUENCY_MILLISECONDS)
+        if (!this.playgroundStoreService.nearestPipesElement) {
+          this.playgroundStoreService.nearestPipesElement = this.elementRef.nativeElement
+            .firstElementChild as HTMLElement;
+          return;
+        }
+
+        const nearestPipesRect =
+          this.playgroundStoreService.nearestPipesElement.getBoundingClientRect();
+        const activeZoneEnd = this.hostWidthPx / 2 - this.birdWidthPixels / 2;
+
+        if (
+          activeZoneEnd > nearestPipesRect.right ||
+          !this.playgroundStoreService.nearestPipesElement
+        ) {
+          this.playgroundStoreService.nearestPipesElement = this.playgroundStoreService
+            .nearestPipesElement.nextElementSibling as HTMLElement;
+        }
+      });
+
+    interval(CheckerFrequencyMs.PipesGenerator)
       .pipe(untilDestroyed(this))
       .subscribe(() => {
         if (!this.isPlaying) {
@@ -91,6 +120,11 @@ export class ObstaclesComponent implements OnInit {
           this.generatePipesCouple();
         }
       });
+
+    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
+      this.isPlaying = isPlaying;
+      this.cdRef.detectChanges();
+    });
   }
 
   private generatePipesCouple(): void {

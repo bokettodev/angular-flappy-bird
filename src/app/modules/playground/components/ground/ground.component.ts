@@ -33,7 +33,7 @@ export class GroundComponent implements OnInit {
   readonly groundImageHeightPixels = 22;
 
   constructor(
-    public readonly elementRef: ElementRef<HTMLElement>,
+    private readonly elementRef: ElementRef<HTMLElement>,
     private readonly cdRef: ChangeDetectorRef,
     private readonly playgroundStoreService: PlaygroundStoreService,
   ) {

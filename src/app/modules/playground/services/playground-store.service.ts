@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 export class PlaygroundStoreService {
   groundElement?: HTMLElement;
   obstaclesElement?: HTMLElement;
-  actualPipesElement?: HTMLElement;
+  nearestPipesElement?: HTMLElement;
   birdElement?: HTMLElement;
 
   readonly birdVerticalSpeedPixelsPerSecond$: Observable<number>;
