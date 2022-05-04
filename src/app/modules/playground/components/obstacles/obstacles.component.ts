@@ -75,6 +75,16 @@ export class ObstaclesComponent implements OnInit {
         this.cdRef.detectChanges();
       });
 
+    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
+      this.isPlaying = isPlaying;
+      this.cdRef.detectChanges();
+    });
+
+    this.runNearestPipesSetter();
+    this.runPipesGenerator();
+  }
+
+  private runNearestPipesSetter(): void {
     interval(CheckerFrequencyMs.NearestPipesSetter)
       .pipe(untilDestroyed(this))
       .subscribe(() => {
@@ -100,7 +110,9 @@ export class ObstaclesComponent implements OnInit {
             .nearestPipesElement.nextElementSibling as HTMLElement;
         }
       });
+  }
 
+  private runPipesGenerator(): void {
     interval(CheckerFrequencyMs.PipesGenerator)
       .pipe(untilDestroyed(this))
       .subscribe(() => {
@@ -120,11 +132,6 @@ export class ObstaclesComponent implements OnInit {
           this.generatePipesCouple();
         }
       });
-
-    this.playgroundStoreService.isPlaying$.pipe(untilDestroyed(this)).subscribe((isPlaying) => {
-      this.isPlaying = isPlaying;
-      this.cdRef.detectChanges();
-    });
   }
 
   private generatePipesCouple(): void {

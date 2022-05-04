@@ -35,6 +35,18 @@ export class PlaygroundComponent implements OnInit {
     this.playgroundStoreService.flyUp();
   }
 
+  private initListeners(): void {
+    this.playgroundStoreService.isPlaying$.subscribe((isPlaying) => {
+      if (isPlaying) {
+        this.runGroundCollisionListener();
+        this.runPipesCollisionListener();
+      } else {
+        this.destroyGroundCollisionListener();
+        this.destroyPipesCollisionListener();
+      }
+    });
+  }
+
   private runGroundCollisionListener(): void {
     this.destroyGroundCollisionListener();
 
@@ -76,22 +88,20 @@ export class PlaygroundComponent implements OnInit {
           return;
         }
         const birdRect = this.playgroundStoreService.birdElement.getBoundingClientRect();
+        const pipesRect = this.playgroundStoreService.nearestPipesElement.getBoundingClientRect();
         const topPipeRect =
           this.playgroundStoreService.nearestPipesElement.firstElementChild.getBoundingClientRect();
         const bottomPipeRect =
           this.playgroundStoreService.nearestPipesElement.lastElementChild.getBoundingClientRect();
 
-        const didBirdCollideWithTopPipe =
-          birdRect.right > topPipeRect.left &&
-          birdRect.right < topPipeRect.right &&
-          birdRect.top < topPipeRect.bottom;
+        const birdOnPipesYAxis =
+          (birdRect.right >= pipesRect.left && birdRect.right <= pipesRect.right) ||
+          (birdRect.left >= pipesRect.left && birdRect.left <= pipesRect.right);
 
-        const didBirdCollideWithBottomPipe =
-          birdRect.right > bottomPipeRect.left &&
-          birdRect.right < bottomPipeRect.right &&
-          birdRect.bottom > bottomPipeRect.top;
+        const collideWithTopPipe = birdOnPipesYAxis && birdRect.top <= topPipeRect.bottom;
+        const collideWithBottomPipe = birdOnPipesYAxis && birdRect.bottom >= bottomPipeRect.top;
 
-        if (didBirdCollideWithTopPipe || didBirdCollideWithBottomPipe) {
+        if (collideWithTopPipe || collideWithBottomPipe) {
           this.playgroundStoreService.setIsPlaying({ isPlaying: false });
           this.cdRef.detectChanges();
         }
@@ -100,17 +110,5 @@ export class PlaygroundComponent implements OnInit {
 
   private destroyPipesCollisionListener(): void {
     this.pipesCollisionListenerSub?.unsubscribe();
-  }
-
-  private initListeners(): void {
-    this.playgroundStoreService.isPlaying$.subscribe((isPlaying) => {
-      if (isPlaying) {
-        this.runGroundCollisionListener();
-        this.runPipesCollisionListener();
-      } else {
-        this.destroyGroundCollisionListener();
-        this.destroyPipesCollisionListener();
-      }
-    });
   }
 }
