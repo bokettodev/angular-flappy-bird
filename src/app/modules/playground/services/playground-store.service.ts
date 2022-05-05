@@ -15,6 +15,7 @@ export class PlaygroundStoreService {
   readonly flyUp$: Observable<void>;
   readonly flyUpStepPixels$: Observable<number>;
 
+  readonly restart$: Observable<void>;
   readonly isPlaying$: Observable<boolean>;
   readonly objectsSpeedPixelsPerSecond$: Observable<number>;
   readonly backgroundSpeedPixelsPerSecond$: Observable<number>;
@@ -31,6 +32,7 @@ export class PlaygroundStoreService {
     this.birdHeightPixels$$.value * 2,
   );
 
+  private readonly restart$$ = new Subject<void>();
   private readonly isPlaying$$ = new BehaviorSubject<boolean>(true);
   private readonly objectsSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(100);
   private readonly backgroundSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(10);
@@ -46,6 +48,7 @@ export class PlaygroundStoreService {
     this.flyUp$ = this.flyUp$$.asObservable();
     this.flyUpStepPixels$ = this.flyUpStepPixels$$.asObservable();
 
+    this.restart$ = this.restart$$.asObservable();
     this.isPlaying$ = this.isPlaying$$.asObservable();
     this.objectsSpeedPixelsPerSecond$ = this.objectsSpeedPixelsPerSecond$$.asObservable();
     this.backgroundSpeedPixelsPerSecond$ = this.backgroundSpeedPixelsPerSecond$$.asObservable();
@@ -72,6 +75,11 @@ export class PlaygroundStoreService {
 
   setFlyUpStepPixels({ step }: { step: number }): void {
     this.flyUpStepPixels$$.next(step);
+  }
+
+  restart(): void {
+    this.restart$$.next();
+    this.setIsPlaying({ isPlaying: true });
   }
 
   setIsPlaying({ isPlaying }: { isPlaying: boolean }): void {

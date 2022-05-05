@@ -79,6 +79,10 @@ export class PipesComponent implements OnInit {
   }
 
   private initListeners(): void {
+    this.playgroundStoreService.restart$.pipe(untilDestroyed(this)).subscribe(() => {
+      this.elementRef.nativeElement.remove();
+    });
+
     this.playgroundStoreService.pipesVerticalIndentPixels$
       .pipe(untilDestroyed(this))
       .subscribe((pipesVerticalIndentPixels) => {

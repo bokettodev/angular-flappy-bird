@@ -58,6 +58,10 @@ export class BirdComponent implements OnInit {
   }
 
   private initListeners(): void {
+    this.playgroundStoreService.restart$.pipe(untilDestroyed(this)).subscribe(() => {
+      this.initPosition();
+    });
+
     this.playgroundStoreService.groundHeight$.pipe(untilDestroyed(this)).subscribe(() => {
       this.maxTopPixels = +(this.parentHeightPixels * 0.78).toFixed();
       this.cdRef.detectChanges();
@@ -152,10 +156,10 @@ export class BirdComponent implements OnInit {
     if (!this.birdHeightPixels) {
       return;
     }
-    this.domService.renderer.setStyle(
-      this.elementRef.nativeElement,
-      'transform',
-      `translateY(${this.parentHeightPixels / 2 - this.birdHeightPixels / 2}px)`,
-    );
+    this.setTranslateYAnimation({
+      duration: '0s',
+      timing: 'linear',
+      to: `${this.parentHeightPixels / 2 - this.birdHeightPixels / 2}px`,
+    });
   }
 }

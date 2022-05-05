@@ -20,6 +20,7 @@ import { interval, SubscriptionLike } from 'rxjs';
 export class PlaygroundComponent implements OnInit {
   private groundCollisionListenerSub?: SubscriptionLike;
   private pipesCollisionListenerSub?: SubscriptionLike;
+  private isPlaying = false;
 
   constructor(
     private readonly cdRef: ChangeDetectorRef,
@@ -32,12 +33,18 @@ export class PlaygroundComponent implements OnInit {
 
   @HostListener('click')
   flyUp(): void {
-    this.playgroundStoreService.flyUp();
+    if (this.isPlaying) {
+      this.playgroundStoreService.flyUp();
+    } else {
+      this.playgroundStoreService.restart();
+    }
   }
 
   private initListeners(): void {
     this.playgroundStoreService.isPlaying$.subscribe((isPlaying) => {
-      if (isPlaying) {
+      this.isPlaying = isPlaying;
+
+      if (this.isPlaying) {
         this.runGroundCollisionListener();
         this.runPipesCollisionListener();
       } else {
