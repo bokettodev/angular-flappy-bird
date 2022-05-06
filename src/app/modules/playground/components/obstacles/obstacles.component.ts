@@ -108,6 +108,7 @@ export class ObstaclesComponent implements OnInit {
         ) {
           this.playgroundStoreService.nearestPipesElement = this.playgroundStoreService
             .nearestPipesElement.nextElementSibling as HTMLElement;
+          this.playgroundStoreService.increaseScore({ score: 1 });
         }
       });
   }

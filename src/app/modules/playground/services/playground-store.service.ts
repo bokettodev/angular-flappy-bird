@@ -15,6 +15,7 @@ export class PlaygroundStoreService {
   readonly flyUp$: Observable<void>;
   readonly flyUpStepPixels$: Observable<number>;
 
+  readonly score$: Observable<number>;
   readonly restart$: Observable<void>;
   readonly isPlaying$: Observable<boolean>;
   readonly objectsSpeedPixelsPerSecond$: Observable<number>;
@@ -32,6 +33,7 @@ export class PlaygroundStoreService {
     this.birdHeightPixels$$.value * 2,
   );
 
+  private readonly score$$ = new BehaviorSubject<number>(0);
   private readonly restart$$ = new Subject<void>();
   private readonly isPlaying$$ = new BehaviorSubject<boolean>(true);
   private readonly objectsSpeedPixelsPerSecond$$ = new BehaviorSubject<number>(100);
@@ -48,6 +50,7 @@ export class PlaygroundStoreService {
     this.flyUp$ = this.flyUp$$.asObservable();
     this.flyUpStepPixels$ = this.flyUpStepPixels$$.asObservable();
 
+    this.score$ = this.score$$.asObservable();
     this.restart$ = this.restart$$.asObservable();
     this.isPlaying$ = this.isPlaying$$.asObservable();
     this.objectsSpeedPixelsPerSecond$ = this.objectsSpeedPixelsPerSecond$$.asObservable();
@@ -77,8 +80,18 @@ export class PlaygroundStoreService {
     this.flyUpStepPixels$$.next(step);
   }
 
+  setScore({ score }: { score: number }): void {
+    this.score$$.next(score);
+  }
+
+  increaseScore({ score }: { score: number }): void {
+    this.score$$.next(this.score$$.value + score);
+  }
+
   restart(): void {
     this.restart$$.next();
+    this.nearestPipesElement = undefined;
+    this.setScore({ score: 0 });
     this.setIsPlaying({ isPlaying: true });
   }
 

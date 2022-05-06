@@ -8,6 +8,7 @@ import {
   ObstaclesComponent,
   PipesComponent,
   PlaygroundComponent,
+  ScoreComponent,
 } from './components';
 import { PlaygroundStoreService } from './services';
 
@@ -19,6 +20,7 @@ import { PlaygroundStoreService } from './services';
     ObstaclesComponent,
     PipesComponent,
     PlaygroundComponent,
+    ScoreComponent,
   ],
   imports: [CommonModule, PlaygroundRoutingModule],
   providers: [PlaygroundStoreService],

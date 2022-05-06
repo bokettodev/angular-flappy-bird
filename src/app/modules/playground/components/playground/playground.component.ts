@@ -13,7 +13,17 @@ import { interval, SubscriptionLike } from 'rxjs';
 @UntilDestroy()
 @Component({
   selector: 'fb-playground',
-  templateUrl: './playground.component.html',
+  template: `
+    <fb-background></fb-background>
+
+    <fb-obstacles></fb-obstacles>
+
+    <fb-ground></fb-ground>
+
+    <fb-score></fb-score>
+
+    <fb-bird></fb-bird>
+  `,
   styleUrls: ['./playground.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -2,6 +2,7 @@
   --sky-color: #4dc1cb;
   --grass-color: #5ee370;
   --ground-color: #dfd996;
+  --text-primary-color: #fff;
 }
 
 * {
@@ -17,4 +18,5 @@
 body {
   width: 100vw;
   height: 100vh;
+  user-select: none;
 }
