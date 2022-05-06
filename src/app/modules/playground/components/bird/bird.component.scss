@@ -20,15 +20,15 @@
 @keyframes bird-wings {
   0%,
   100% {
-    background-image: url('/assets/images/png/birds/bluebird-downflap.png');
+    background-image: url('../../../../../assets/images/png/birds/bluebird-downflap.png');
   }
 
   25%,
   75% {
-    background-image: url('/assets/images/png/birds/bluebird-midflap.png');
+    background-image: url('../../../../../assets/images/png/birds/bluebird-midflap.png');
   }
 
   50% {
-    background-image: url('/assets/images/png/birds/bluebird-upflap.png');
+    background-image: url('../../../../../assets/images/png/birds/bluebird-upflap.png');
   }
 }

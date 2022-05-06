@@ -15,7 +15,7 @@
     width: 200%;
     height: calc(var(--ground-image-height-pixels) * 1px);
     content: '';
-    background-image: url('/assets/images/png/grounds/ground-green.png');
+    background-image: url('../../../../../assets/images/png/grounds/ground-green.png');
     background-repeat: repeat-x;
     animation-name: ground-image-move-left;
     animation-duration: calc(
