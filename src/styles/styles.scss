@@ -1,6 +1,8 @@
-@use 'color-palette';
-@use 'scrollbar';
-@use 'typography';
+:root {
+  --sky-color: #4dc1cb;
+  --grass-color: #5ee370;
+  --ground-color: #dfd996;
+}
 
 * {
   box-sizing: border-box;
@@ -15,5 +17,4 @@
 body {
   width: 100vw;
   height: 100vh;
-  font-family: var(--font-family-primary);
 }
