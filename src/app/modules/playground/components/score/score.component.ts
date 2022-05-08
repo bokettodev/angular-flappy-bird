@@ -6,7 +6,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 @Component({
   selector: 'fb-score',
   template: `
-    {{ score }}
+    <img
+      *ngFor="let number of score.toString().split('')"
+      src="assets/images/png/numbers/{{ number }}.png"
+    />
   `,
   styleUrls: ['./score.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
