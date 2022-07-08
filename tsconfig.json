@@ -6,28 +6,22 @@
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2017",
+    "target": "es2020",
     "module": "es2020",
-    "lib": ["es2020", "dom"],
-    "paths": {
-      "@app": ["src/app"],
-      "@modules/*": ["src/app/modules/*"],
-      "@shared/*": ["src/app/shared/*"],
-      "@environment": ["src/environments/environment"]
-    }
+    "lib": [
+      "es2020",
+      "dom"
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
