@@ -4,9 +4,9 @@ import { RouterModule } from '@angular/router';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterModule],
-  selector: 'fb-root',
+  selector: 'fb-playground',
   standalone: true,
-  styleUrls: ['./app.component.scss'],
-  template: `<router-outlet></router-outlet>`,
+  styleUrls: ['./playground.component.scss'],
+  template: ``,
 })
-export class AppComponent {}
+export class PlaygroundComponent {}
